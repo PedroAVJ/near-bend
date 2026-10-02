@@ -1,0 +1,30 @@
+{
+  "name": "near-bend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/function"
+  ],
+  "scripts": {
+    "test": "npm test --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "gen:check": "node packages/function/stdlib/dot/scripts/build.mjs --check",
+    "check": "node scripts/check.mjs",
+    "pack:check": "node scripts/audit.mjs",
+    "consumer:check": "node scripts/clean-room.mjs",
+    "native:consumer": "node scripts/native-consumer.mjs",
+    "dryrun": "node packages/function/deployment/bin/near-v.js dryrun --template dot --first-install",
+    "verify": "npm run check && npm test && npm run gen:check && npm run build && npm run dryrun && npm run pack:check && npm run consumer:check && npm run native:consumer && npm run canvas:build && npm run canvas:gen:check && npm run canvas:test",
+    "canvas:build": "npm run build --prefix examples/canvas",
+    "canvas:test": "npm test --prefix examples/canvas",
+    "canvas:gen:check": "npm run gen:check --prefix examples/canvas",
+    "canvas": "NEAR_CANVAS_ARTIFACT=examples/canvas/dist node packages/function/deployment/templates/canvas/server.mjs",
+    "history:check": "node scripts/history-audit.mjs"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/node": "22.20.4",
+    "linkedom": "0.18.13"
+  }
+}

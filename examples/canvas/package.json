@@ -1,0 +1,11 @@
+{
+  "name": "near-v-framework-canvas",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen": "node scripts/gen/kit_canvas.mjs",
+    "build": "node scripts/build.mjs",
+    "gen:check": "node scripts/gen/kit_canvas.mjs --check",
+    "test": "node tests/kit.mjs && node tests/canvas.mjs"
+  }
+}

@@ -1,0 +1,4 @@
+/* Shared neutral specimen presentation; canvas chrome is in index.html. */
+.sprite-viewport{display:block;position:relative;overflow:hidden}
+.sprite-sheet{position:absolute;max-width:none;pointer-events:none}
+.symbol{display:block}

@@ -1,0 +1,176 @@
+{
+  "name": "near-v",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Experimental reusable Bend 2 UI, typed AI clients, assistant state/media and deployment planning",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs"
+    },
+    "./browser": {
+      "types": "./browser.d.ts",
+      "import": "./browser.mjs"
+    },
+    "./bend/*": "./*.bend",
+    "./ai": {
+      "types": "./stdlib/ai/src/index.d.ts",
+      "import": "./stdlib/ai/src/index.mjs"
+    },
+    "./ai/mock": {
+      "types": "./stdlib/ai/src/mock.d.ts",
+      "import": "./stdlib/ai/src/mock.mjs"
+    },
+    "./dot": {
+      "types": "./stdlib/dot/src/index.d.ts",
+      "import": "./stdlib/dot/src/index.mjs"
+    },
+    "./dot/browser": {
+      "types": "./stdlib/dot/src/browser.d.ts",
+      "import": "./stdlib/dot/src/browser.mjs"
+    },
+    "./ai/bend": "./stdlib/ai/ai-sdk.bend",
+    "./dot/bend": "./stdlib/dot/bend/session.bend",
+    "./templates/open-dot/server": {
+      "types": "./deployment/templates/open-dot/server.d.ts",
+      "import": "./deployment/templates/open-dot/server.mjs"
+    },
+    "./deploy": {
+      "types": "./deployment/src/index.d.ts",
+      "import": "./deployment/src/index.js"
+    },
+    "./deploy/bend": "./deployment/near-v.bend",
+    "./requirements": {
+      "types": "./requirements.d.ts",
+      "import": "./requirements.mjs"
+    },
+    "./bend": "./near-v.bend",
+    "./templates/plan": {
+      "types": "./deployment/templates/plan.d.ts",
+      "import": "./deployment/templates/plan.mjs"
+    },
+    "./ai/live": {
+      "types": "./stdlib/ai/src/live.d.ts",
+      "import": "./stdlib/ai/src/live.mjs"
+    },
+    "./dot/adapters": {
+      "types": "./stdlib/dot/src/adapters.d.ts",
+      "import": "./stdlib/dot/src/adapters.mjs"
+    },
+    "./dot/live": {
+      "types": "./stdlib/dot/src/live-bridge.d.ts",
+      "import": "./stdlib/dot/src/live-bridge.mjs"
+    },
+    "./dot/media": {
+      "types": "./stdlib/dot/src/media.d.ts",
+      "import": "./stdlib/dot/src/media.mjs"
+    },
+    "./ai/gpt-live": {
+      "types": "./stdlib/ai/src/gpt-live.d.ts",
+      "import": "./stdlib/ai/src/gpt-live.mjs"
+    },
+    "./dot/gpt-live": {
+      "types": "./stdlib/dot/src/gpt-live-bridge.d.ts",
+      "import": "./stdlib/dot/src/gpt-live-bridge.mjs"
+    },
+    "./ai/bend/*": "./stdlib/ai/bend/*.bend",
+    "./ai/native-host": {
+      "types": "./stdlib/ai/native-host/host.d.ts",
+      "import": "./stdlib/ai/native-host/host.mjs"
+    },
+    "./ai/native-host/bend": "./stdlib/ai/native-host/host.bend",
+    "./dot/bend/native": "./stdlib/dot/bend/native.bend",
+    "./ai/native-fetch": {
+      "types": "./stdlib/ai/native-host/raw-fetch.d.ts",
+      "import": "./stdlib/ai/native-host/raw-fetch.mjs"
+    },
+    "./dot/bend/*": "./stdlib/dot/bend/*.bend",
+    "./dot/assets": {
+      "types": "./stdlib/dot/src/assets.d.ts",
+      "import": "./stdlib/dot/src/assets.mjs"
+    },
+    "./dot/transcription": {
+      "types": "./stdlib/dot/src/transcription.d.ts",
+      "import": "./stdlib/dot/src/transcription.mjs"
+    },
+    "./dot/composer": {
+      "types": "./stdlib/dot/src/composer.d.ts",
+      "import": "./stdlib/dot/src/composer.mjs"
+    },
+    "./dot/voice-message": {
+      "types": "./stdlib/dot/src/voice-message.d.ts",
+      "import": "./stdlib/dot/src/voice-message.mjs"
+    },
+    "./dot/camera-context": {
+      "types": "./stdlib/dot/src/camera-context.d.ts",
+      "import": "./stdlib/dot/src/camera-context.mjs"
+    },
+    "./ai/native-multipart": {
+      "types": "./stdlib/ai/native-host/raw-multipart.d.ts",
+      "import": "./stdlib/ai/native-host/raw-multipart.mjs"
+    },
+    "./dot/composer.css": "./stdlib/dot/src/composer.css",
+    "./templates/canvas/server": {
+      "types": "./deployment/templates/canvas/server.d.ts",
+      "import": "./deployment/templates/canvas/server.mjs"
+    }
+  },
+  "files": [
+    "*.bend",
+    "*.mjs",
+    "*.d.ts",
+    "adapters",
+    "README.md",
+    "stdlib/ai/src",
+    "stdlib/ai/bend",
+    "stdlib/ai/native-host/*.bend",
+    "stdlib/ai/native-host/*.mjs",
+    "stdlib/ai/native-host/*.js",
+    "stdlib/ai/native-host/README.md",
+    "stdlib/ai/ai-sdk.bend",
+    "stdlib/ai/README.md",
+    "stdlib/ai/LICENSE",
+    "stdlib/ai/examples",
+    "stdlib/dot/src",
+    "stdlib/dot/bend",
+    "stdlib/dot/README.md",
+    "deployment/src",
+    "deployment/bin",
+    "deployment/bend",
+    "deployment/near-v.bend",
+    "deployment/examples",
+    "deployment/templates",
+    "deployment/README.md",
+    "deployment/LICENSE",
+    "deployment/PROVENANCE.md",
+    "LICENSE",
+    "stdlib/ai/native-host/*.d.ts",
+    "stdlib/ai/bend/LICENSE",
+    "stdlib/ai/bend/WIRE_JSON_LICENSE",
+    "stdlib/ai/bend/PROVENANCE.md",
+    "stdlib/ai/native-host/LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs stdlib/ai/tests/*.test.mjs stdlib/dot/tests/*.test.mjs deployment/tests/*.test.js stdlib/ai/native-host/tests/*.test.mjs",
+    "build": "node stdlib/dot/scripts/build.mjs",
+    "template": "node deployment/templates/open-dot/server.mjs",
+    "dryrun": "node deployment/bin/near-v.js dryrun --template dot --first-install"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "types": "./index.d.ts",
+  "bin": {
+    "near-v": "./deployment/bin/near-v.js"
+  },
+  "optionalDependencies": {
+    "ws": "8.22.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PedroAVJ/near-bend.git",
+    "directory": "packages/function"
+  },
+  "homepage": "https://github.com/PedroAVJ/near-bend"
+}

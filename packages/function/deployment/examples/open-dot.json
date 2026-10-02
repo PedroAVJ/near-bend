@@ -1,0 +1,1 @@
+{"name":"open-dot","version":"0.1.0","address":"http://127.0.0.1:9462","services":[{"id":"assistant","runtime":"node","artifact":"deployment/templates/open-dot/server.mjs","port":9462}],"stores":[],"acceptedBreaks":[]}

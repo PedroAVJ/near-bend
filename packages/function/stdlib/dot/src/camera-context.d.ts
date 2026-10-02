@@ -1,0 +1,12 @@
+export type CameraMode='realtime-images'|'vision-summary';
+export type CameraPhase='off'|'starting'|'ready'|'pending'|'sent'|'accepted'|'error';
+export interface CameraState {readonly phase:CameraPhase;readonly active:boolean;readonly id?:string;readonly capturedAtMs:number;readonly eventId?:string;readonly code?:string}
+export interface CameraFrame {type?:'camera.frame';id:string;dataURI:string;capturedAtMs:number}
+export interface CameraReceipt {status:'sent'|'accepted';id?:string;eventId:string}
+export interface CameraStatusEvent extends CameraState {type:'camera.status'}
+export const cameraLimits:Readonly<{maxFrameBytes:262144;minIntervalMs:1000;maxWidth:640;maxHeight:480;maxPending:1;retainedFrames:0}>;
+export function validateCameraFrame(frame:CameraFrame,options?:{now?:number;maxFrameBytes?:number}):{id:string;capturedAtMs:number;byteLength:number;mime:string};
+export interface CameraContextOptions {sendFrame:(frame:CameraFrame&{type:'camera.frame'},options:{signal:AbortSignal})=>Promise<CameraReceipt>|CameraReceipt;sendControl?:(event:{type:'camera.enable'|'camera.disable'})=>unknown|Promise<unknown>;mediaDevices?:Pick<MediaDevices,'getUserMedia'>;video?:HTMLVideoElement;canvas?:HTMLCanvasElement;capture?:(video:HTMLVideoElement,options:{canvas:HTMLCanvasElement;maxWidth:number;maxHeight:number;signal:AbortSignal})=>Promise<string>|string;now?:()=>number;inCall?:()=>boolean;onStatus?:(state:CameraState)=>void;maxFrameBytes?:number;minIntervalMs?:number;ackTimeoutMs?:number}
+export function createCameraContext(options:CameraContextOptions):Readonly<{start(options:{userGesture:true}):Promise<CameraState>;stop():CameraState;captureFrame():Promise<CameraState>;onEvent(event:CameraStatusEvent):CameraState;snapshot():CameraState}>;
+export type CameraContextRelayOptions = {emitStatus?:(event:CameraStatusEvent)=>void;now?:()=>number;isPermitted?:()=>boolean;ackTimeoutMs?:number}&({mode:'realtime-images';session:{appendImage:(dataURI:string,options:{eventId:string;itemId:string})=>unknown};visionDelegate?:never}|{mode:'vision-summary';session:{appendInstructions:(delegationId:null,text:string,options:{eventId:string})=>unknown};visionDelegate:(frame:CameraFrame,options:{signal:AbortSignal})=>Promise<string>|string});
+export function createCameraContextRelay(options:CameraContextRelayOptions):Readonly<{enable():CameraState;disable():CameraState;receive(frame:CameraFrame,options?:{signal?:AbortSignal}):Promise<CameraReceipt>;onEvent(event:unknown):boolean;close():void;snapshot():CameraState}>;

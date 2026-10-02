@@ -1,0 +1,1 @@
+This is the canonical reusable near-v framework repository. Keep application-specific code and data in their original application repositories. Preserve third-party notices. Use offline mocked providers. No remote publication, deployment, Claude messaging, or release-runner changes are authorized during the current cleanup.

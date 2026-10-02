@@ -1,0 +1,22 @@
+import {spawnSync} from 'node:child_process';
+import {readFileSync} from 'node:fs';
+const root=new URL('..',import.meta.url);
+function git(args){const r=spawnSync('git',args,{cwd:root,encoding:'utf8',maxBuffer:32*1024*1024});if(r.status!==0)throw Error(r.stderr);return r.stdout}
+const rules=[['application fixture',/DEMO 1042|Sucursal Centro|Proveedor Demo|Tomate recibido|Foto de la remisi[oó]n|Recibir pedido|delivery-photo\.svg|core\.AddEmployee|core\.Employee/],['private artwork',/nearling-original\.png|near-reference\.png|pet_[a-f0-9]{20,}/],['local identifier',/\/Users\/|\/private\/var\/folders\/|\.ts\.net|pedroantoniovillanuevajuarez/],['credential',/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\bsk-(?:proj-|ant-|or-v1-)[A-Za-z0-9_-]{15,}|\bgh[pousr]_[A-Za-z0-9]{30,}|Bearer [A-Za-z0-9_-]{25,}/]];
+const auditPaths=new Set(['scripts/audit.mjs','scripts/history-audit.mjs']);
+const refs=git(['for-each-ref','--format=%(refname)']).trim().split('\n').filter(Boolean);
+if(refs.length!==1||refs[0]!=='refs/heads/main')throw Error('Unexpected history refs: '+refs.join(','));
+const commits=git(['rev-list','--all']).trim().split('\n').filter(Boolean);
+if(commits.length!==1)throw Error('This clean-history checkpoint must contain exactly one initial commit');
+const allowed=/^(?:\.github\/|AGENTS\.md$|LICENSE$|README\.md$|RELEASE_NOTES\.md$|THIRD_PARTY_NOTICES\.md$|\.gitignore$|package(?:-lock)?\.json$|packages\/function\/|scripts\/|tools\/bend\/|examples\/canvas\/)/;
+let scans=0;
+for(const commit of commits){
+ const files=git(['ls-tree','-r','--format=%(objectname) %(path)',commit]).trim().split('\n');
+ for(const line of files){const split=line.indexOf(' '),id=line.slice(0,split),path=line.slice(split+1);if(!allowed.test(path)||/^(?:evidence|verification|artifacts)\/|\/core\.bend$|\/src\/(?:app|screens|review|screens_canvas)\.bend$|\.(?:tgz|png|webp|jpe?g|mp4|wav)$/.test(path))throw Error('Forbidden tree path: '+path);const text=git(['cat-file','blob',id]);if(!auditPaths.has(path))for(const [name,pattern]of rules)if(pattern.test(text))throw Error(name+' in '+path);scans++}
+ const message=git(['show','-s','--format=%B',commit]);for(const [name,pattern]of rules)if(pattern.test(message))throw Error(name+' in commit metadata');
+}
+const objects=git(['cat-file','--batch-all-objects','--batch-check=%(objectname) %(objecttype)']).trim().split('\n');
+const reached=new Set(git(['rev-list','--objects','--all']).trim().split('\n').map(l=>l.split(' ')[0]));
+for(const line of objects)if(!reached.has(line.split(' ')[0]))throw Error('Unreachable object retained: '+line);
+const fsck=git(['fsck','--full','--no-reflogs']);if(/dangling|unreachable/.test(fsck))throw Error(fsck);
+console.log(JSON.stringify({passed:true,refs,commits:commits.length,filesScanned:scans,objects:objects.length,unreachableObjects:0}));
