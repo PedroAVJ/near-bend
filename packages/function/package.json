@@ -137,6 +137,10 @@
     "./mcp-ui": {
       "types": "./protocol/mcp-ui.d.ts",
       "import": "./protocol/mcp-ui.mjs"
+    },
+    "./deploy/targets": {
+      "types": "./deployment/targets/index.d.mts",
+      "import": "./deployment/targets/index.mjs"
     }
   },
   "files": [
@@ -182,10 +186,13 @@
     "setup/*.d.ts",
     "setup/README.md",
     "protocol/*.mjs",
-    "protocol/*.d.ts"
+    "protocol/*.d.ts",
+    "deployment/targets/*.mjs",
+    "deployment/targets/*.d.mts",
+    "deployment/targets/README.md"
   ],
   "scripts": {
-    "test": "node --test --test-concurrency=1 tests/*.test.mjs stdlib/ai/tests/*.test.mjs stdlib/dot/tests/*.test.mjs deployment/tests/*.test.js stdlib/ai/native-host/tests/*.test.mjs mobile/tests/*.test.mjs setup/tests/*.test.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs stdlib/ai/tests/*.test.mjs stdlib/dot/tests/*.test.mjs deployment/tests/*.test.js stdlib/ai/native-host/tests/*.test.mjs mobile/tests/*.test.mjs setup/tests/*.test.mjs deployment/targets/tests/*.test.mjs",
     "build": "node stdlib/dot/scripts/build.mjs",
     "template": "node deployment/templates/open-dot/server.mjs",
     "dryrun": "node deployment/bin/near-function.js dryrun --template dot --first-install"

@@ -8,7 +8,7 @@ const refs=git(['for-each-ref','--format=%(refname)']).trim().split('\n').filter
 if(refs.length!==1||refs[0]!=='refs/heads/main')throw Error('Unexpected history refs: '+refs.join(','));
 const commits=git(['rev-list','--all']).trim().split('\n').filter(Boolean);
 if(!commits.length)throw Error('Clean history requires a reachable commit');
-const allowed=/^(?:\.github\/|AGENTS\.md$|LICENSE$|README\.md$|RELEASE_NOTES\.md$|THIRD_PARTY_NOTICES\.md$|\.gitignore$|package(?:-lock)?\.json$|packages\/function\/|scripts\/|tools\/bend\/|examples\/canvas\/)/;
+const allowed=/^(?:\.github\/|AGENTS\.md$|LICENSE$|README\.md$|RELEASE_NOTES\.md$|THIRD_PARTY_NOTICES\.md$|\.gitignore$|package(?:-lock)?\.json$|packages\/(?:function|dot)\/|scripts\/|tools\/bend\/|examples\/canvas\/)/;
 let scans=0;
 for(const commit of commits){
  const files=git(['ls-tree','-r','--format=%(objectname) %(path)',commit]).trim().split('\n');

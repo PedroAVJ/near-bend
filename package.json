@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/function"
+    "packages/function",
+    "packages/dot"
   ],
   "scripts": {
     "test": "npm test --workspaces --if-present",
@@ -20,7 +21,10 @@
     "canvas:test": "npm test --prefix examples/canvas",
     "canvas:gen:check": "npm run gen:check --prefix examples/canvas",
     "canvas": "NEAR_CANVAS_ARTIFACT=examples/canvas/dist node packages/function/deployment/templates/canvas/server.mjs",
-    "history:check": "node scripts/history-audit.mjs"
+    "history:check": "node scripts/history-audit.mjs",
+    "dot:preview": "npm run preview --workspace near-dot",
+    "dot:build": "npm run build --workspace near-dot",
+    "readiness": "node scripts/readiness.mjs"
   },
   "devDependencies": {
     "typescript": "5.9.3",

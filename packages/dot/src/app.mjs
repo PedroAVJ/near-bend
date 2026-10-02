@@ -1,0 +1,24 @@
+import {createDotClient} from './client.mjs';
+import {createRenderer} from 'near-function/browser';
+const render=createRenderer({}),root=document.querySelector('#app');
+const list=items=>items.reduceRight((tail,head)=>({$:'Con',head,tail}),{$:'Nil'});
+const text=(kind,value)=>({$:'components.Text',kind,value});
+const button=(label,action,id)=>({$:'components.Button',kind:'service-action',label,action,id,disabled:false});
+const adapter=Object.fromEntries(['issue','redeem','connect','observeHost','action'].map(method=>[method,async(input,signal)=>{const response=await fetch('/fixture/'+method,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input),signal});if(!response.ok)throw new Error('Fixture request rejected');return response.json()}]));
+const client=createDotClient({adapter});
+const backends={desktop:{id:'desktop',kind:'local-desktop',endpoint:'http://127.0.0.1:9450/'},private:{id:'private',kind:'remote-private',endpoint:'https://fixture.invalid/'}};
+let selected='desktop',lastResult='';
+root.innerHTML=`<header><a href="./" aria-label="Open Dot home">Open Dot<span class="brand-dot"></span></a><span>Local fixture</span></header><main><div class="intro"><h1>Your Dots, in one place.</h1><p>Pair this client with a deployment. The deployment owns its tools, storage and access.</p></div><div class="workspace"><section class="setup"><h2>Connect a Dot</h2><label for="deployment">Deployment</label><select id="deployment"><option value="desktop">Personal desktop</option><option value="private">Private remote</option></select><p id="backend-note">Desktop backend must be running. Another device needs an explicitly verified private route.</p><label class="check"><input id="owner-consent" type="checkbox">I own this fixture Dot and approve a pairing link.</label><button id="issue">Create pairing link</button><div id="presentation" hidden><label for="link">Pairing link / QR payload</label><textarea id="link" rows="3" spellcheck="false"></textarea><p id="expires"></p><p class="fine">Manual entry is available. This web milestone does not draw a scannable QR.</p></div><label class="check"><input id="consent" type="checkbox">Pair this client and allow service UI and tasks.</label><button id="redeem">Pair client</button><label class="check"><input id="trust" type="checkbox">I trust this deployment and its connected service.</label><button id="connect" class="primary">Connect</button><div class="secondary"><button id="cancel">Cancel request</button><button id="disconnect">Disconnect</button></div></section><section class="surface"><div id="state" aria-live="polite"></div><div id="service"></div><p id="result" role="status"></p><p class="fine footnote">Fixture only: authentication, private-route reachability and service responses are injected. No real endpoint or provider is contacted.</p></section></div></main>`;
+const el=id=>document.getElementById(id);
+client.subscribe(state=>{
+  el('state').innerHTML=render({$:'components.Group',kind:'connection-state',children:list([text('card-title',state.phase==='connected'?'Workspace':'Ready when you are'),text(state.error?'error':'save-status',state.error?`Connection check: ${state.error}`:`Client state: ${state.phase}`)])});
+  if(state.presentation){el('presentation').hidden=false;el('link').value=state.presentation.manualLink;el('expires').textContent='Expires '+new Date(state.presentation.expiresAt).toLocaleTimeString()+' · single use';}
+  el('service').innerHTML=state.phase==='connected'&&state.ui?render({$:'components.Group',kind:'service-ui',children:list(state.ui.nodes.map(n=>n.type==='text'?text('service-copy',n.text):button(n.text,'invoke',n.id)))}):'';
+  el('result').textContent=lastResult;
+});
+el('deployment').onchange=e=>{selected=e.target.value;client.disconnect();el('presentation').hidden=true;el('backend-note').textContent=selected==='desktop'?'Desktop backend must be running. Another device needs an explicitly verified private route.':'Private remote backend requires authentication, protocol compatibility and network access.'};
+el('issue').onclick=()=>client.issue({dotId:selected,audience:'fixture-browser',consent:el('owner-consent').checked});
+el('redeem').onclick=()=>client.redeem({link:el('link').value,audience:'fixture-browser',consent:el('consent').checked,acceptedPermissions:['mcp-ui','tasks']});
+el('connect').onclick=()=>client.connect({backend:backends[selected],trusted:el('trust').checked});
+el('cancel').onclick=()=>client.cancel();el('disconnect').onclick=()=>{lastResult='';client.disconnect();el('link').value='';el('presentation').hidden=true};
+el('service').onclick=async e=>{const target=e.target.closest('[data-action="invoke"]');if(!target)return;const result=await client.action(target.dataset.id);if(result.ok){lastResult=result.result.message;el('result').textContent=lastResult}};

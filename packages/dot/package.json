@@ -1,0 +1,53 @@
+{
+  "name": "near-dot",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Open Dot shared client application built with F",
+  "exports": {
+    ".": {
+      "types": "./src/client.d.ts",
+      "import": "./src/client.mjs"
+    },
+    "./preview": {
+      "types": "./scripts/preview.d.ts",
+      "import": "./scripts/preview.mjs"
+    }
+  },
+  "files": [
+    "src",
+    "scripts",
+    "dist",
+    "README.md",
+    "LICENSE",
+    "native/apple/Package.swift",
+    "native/apple/Sources",
+    "native/apple/Tests",
+    "native/apple/script",
+    "native/apple/README.md",
+    "native/android/app/src",
+    "native/android/app/build.gradle",
+    "native/android/build.gradle",
+    "native/android/settings.gradle",
+    "native/android/gradle.properties",
+    "native/android/README.md"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "preview": "node scripts/preview.mjs",
+    "native:macos": "bash native/apple/script/build_and_run.sh --build-only",
+    "native:ios": "bash native/apple/script/build_ios.sh"
+  },
+  "dependencies": {
+    "near-function": "0.1.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PedroAVJ/near-bend.git",
+    "directory": "packages/dot"
+  }
+}

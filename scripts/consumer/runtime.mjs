@@ -76,3 +76,8 @@ const {composeMcpUI,authorizeMcpAction}=await import('near-function/mcp-ui');
 const backend=defineBackend({id:'fixture',kind:'local-desktop',endpoint:'http://127.0.0.1:9462'});assert.equal(checkConnection(backend,{installed:true,authenticated:false,platform:'ios'},{}).ok,false);
 const authority=createSetupAuthority({dots:[{id:'fixture',ownerId:'owner',backend,permissions:['chat']}],callbackURLs:['near-dot://setup/complete']});const grant=authority.issue({dotId:'fixture',ownerId:'owner',audience:'fixture-client',consent:true,callback:'near-dot://setup/complete'});assert.equal(setupPresentation(grant).qrPayload,grant.link);
 assert.equal(authority.redeem({link:grant.link,audience:'fixture-client',consent:true,acceptedPermissions:['chat']}).ok,true);assert.equal(authority.redeem({link:grant.link,audience:'fixture-client',consent:true,acceptedPermissions:['chat']}).code,'replayed');void [composeMcpUI,authorizeMcpAction];console.log('Installed mobile declarations and setup single-use authority fail closed; no native or network side effects.');
+
+const {createDotClient}=await import('near-dot');const {createDotPreview}=await import('near-dot/preview');
+const dotClient=createDotClient({adapter:{}});assert.equal(dotClient.snapshot().phase,'disconnected');dotClient.disconnect();const preview=createDotPreview();assert.equal(typeof preview.listen,'function');
+const {planReleaseTargets}=await import('near-function/deploy/targets');const selected=planReleaseTargets(['github-source']);assert.equal(selected.selected.length,1);assert.ok(selected.blockers.every(x=>x.target==='github-source'));assert.equal(selected.executable,false);
+console.log('Installed near-dot client/preview and selected source-only preparation import without listener or publication.');

@@ -72,3 +72,11 @@ The framework canvas is available with `npm run canvas:build`, `npm run canvas:t
 The package is `near-function`; the framework is **F**, written **F(s)** in visual notation. The repository remains `near-bend`. The `near-v` executable alias and `near-v.bend` source entry are retained for local source/CLI compatibility in this same package. Existing JavaScript consumers must update their package dependency and bare imports to `near-function`; there is no second `near-v` package.
 
 The internal `near-v.native-host.v1` and `near-v.native-io.async.v1` global symbol keys remain unchanged as a versioned native-host ABI, so compiled IO and its installed host continue to agree. They are not package names. No namespace registration or publication is implied by this local rename.
+
+## Open Dot client application
+
+`packages/dot` is the separate `near-dot` application package built with F. Its web fixture is runnable; native Apple sources produce macOS and iOS simulator builds; Android native sources require an approved JDK/SDK/Gradle environment before compilation. These are bounded offline milestones, not authenticated production deployments. Each platform's README itemizes the remaining checks.
+
+`npm run dot:build` builds web. `npm run dot:preview` starts the loopback-only synthetic preview. Native build commands live in `packages/dot/native/apple/script`. Output is ignored, and no store submission or deployment occurs.
+
+`npm run readiness -- github-source` plans only source sync checks. `near-function/deploy/targets` also distinguishes package publish, backend deploy, web deploy and native store targets; unselected target requirements do not block the selected plan. It performs no execution or credential probes. Explicit observations can be supplied as a second JSON-file argument.

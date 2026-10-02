@@ -80,3 +80,8 @@ import {composeMcpUI,authorizeMcpAction} from 'near-function/mcp-ui';
 const backend=defineBackend({id:'fixture',kind:'local-desktop',endpoint:'http://127.0.0.1:9462'});
 const authority=createSetupAuthority({dots:[{id:'fixture',ownerId:'owner',backend,permissions:['chat']}],callbackURLs:['near-dot://setup/complete']});
 const grant=authority.issue({dotId:'fixture',ownerId:'owner',audience:'client',consent:true,callback:'near-dot://setup/complete'});setupPresentation(grant);void [mobileCases,planMobileTarget,checkConnection,composeMcpUI,authorizeMcpAction];
+
+import {createDotClient} from 'near-dot';import type {DotAdapter} from 'near-dot';
+import {createDotPreview} from 'near-dot/preview';
+import {planReleaseTargets} from 'near-function/deploy/targets';
+const targetPlan=planReleaseTargets(['github-source']);const dotPreview=createDotPreview();void [createDotClient,targetPlan,dotPreview];const dotAdapter:DotAdapter|undefined=undefined;void dotAdapter;

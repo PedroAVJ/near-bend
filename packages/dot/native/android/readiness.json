@@ -1,0 +1,20 @@
+{
+  "platform": "android",
+  "mode": "build-verify-only",
+  "checks": [
+    {"id":"native-manifest","status":"passed","reason":"XML parses, pairing route bounded, no network/camera/microphone/storage permissions declared"},
+    {"id":"shared-f-contract-fixtures","status":"passed","reason":"3 Node tests exercise actual F setup authority/client modules, not Java runtime"},
+    {"id":"jdk","status":"absent-capability","reason":"java_home and javac cannot locate Java runtime; no configured JAVA_HOME or standard JDK installation"},
+    {"id":"android-sdk","status":"absent-capability","reason":"No SDK at checked standard location; ANDROID_HOME and ANDROID_SDK_ROOT unset"},
+    {"id":"gradle","status":"absent-capability","reason":"No gradle executable/cache/wrapper available"},
+    {"id":"native-controller-tests","status":"not-observed","reason":"Runnable Java fixture tests blocked before compilation by missing JDK"},
+    {"id":"unsigned-apk-build","status":"not-observed","reason":"assembleRelease cannot run without JDK, Android SDK and Gradle; no APK produced"},
+    {"id":"device-emulator-ui","status":"not-observed","reason":"No compiled APK or runnable SDK/emulator; native UI unexecuted"},
+    {"id":"production-authenticated-deployment-transport","status":"unimplemented","reason":"Native trust/authentication, protocol handshake, pairing redemption and MCP UI transport adapters unavailable"},
+    {"id":"qr-camera-scanner","status":"unimplemented","reason":"Manual entry/deep-link staging implemented in source; QR scanner/camera adapter absent"},
+    {"id":"release-signing","status":"not-observed","reason":"No release signing identity/account inspected; existing debug keystore existence observed only, untouched"},
+    {"id":"play-console-destination","status":"not-observed","reason":"No account/destination authorization lookup performed"},
+    {"id":"privacy-data-safety-review","status":"unimplemented","reason":"Production permissions, privacy disclosures, Data Safety and store assets pending actual connected client implementation"},
+    {"id":"store-review","status":"not-observed","reason":"External Google Play review gate; no submission permitted or performed"}
+  ]
+}

@@ -1,1 +1,3 @@
 This is the canonical reusable near-function framework repository. Keep application-specific code and data in their original application repositories. Preserve third-party notices. Use offline mocked providers. No remote publication, deployment, Claude messaging, or release-runner changes are authorized during the current cleanup.
+
+The separately authorized near-dot application lives in packages/dot and depends on near-function. Keep pairing/protocol/target contracts in F and concrete client/native packaging in Dot. Build/verify only; never accept SDK agreements, create credentials, change network/security settings, or publish/submit/deploy without current authorization.

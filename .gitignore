@@ -5,3 +5,9 @@ artifacts/
 .env*
 .DS_Store
 examples/canvas/dist/
+packages/dot/dist/
+**/.build/
+**/.gradle/
+**/build/
+**/dist/
+*.class
