@@ -13,3 +13,7 @@ import ./components.bend as Components
 import ./deployment/near-function.bend as Deployment
 import ./deployment/bend/source/type.bend as Source
 import ./deployment/bend/source/ops.bend as SourceChecks
+
+# Declared mobile sandbox targets and bounded evidence checks; no native renderer.
+import ./mobile/bend/type.bend as MobileTarget
+import ./mobile/bend/ops.bend as MobileChecks

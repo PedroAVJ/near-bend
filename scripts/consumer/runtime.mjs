@@ -68,3 +68,11 @@ const pinned=defineSource({kind:'mirror',model:{id:'model',revision:'a'.repeat(4
 assert.equal(sourceSteps(pinned)[0].status,'unverified');
 const missing=await observeSource(pinned,{});assert.equal(missing.implementation.status,'missing');assert.ok(sourceSteps(pinned,missing).some(s=>s.status==='blocked'));
 console.log('Installed typed provenance and read-only observer imports fail closed without repository mappings.');
+
+const {mobileCases,planMobileTarget}=await import('near-function/platform');assert.equal(planMobileTarget(mobileCases[0].target).ready,false);
+const {defineBackend,checkConnection,setupPresentation}=await import('near-function/setup');
+const {createSetupAuthority}=await import('near-function/setup/server');
+const {composeMcpUI,authorizeMcpAction}=await import('near-function/mcp-ui');
+const backend=defineBackend({id:'fixture',kind:'local-desktop',endpoint:'http://127.0.0.1:9462'});assert.equal(checkConnection(backend,{installed:true,authenticated:false,platform:'ios'},{}).ok,false);
+const authority=createSetupAuthority({dots:[{id:'fixture',ownerId:'owner',backend,permissions:['chat']}],callbackURLs:['near-dot://setup/complete']});const grant=authority.issue({dotId:'fixture',ownerId:'owner',audience:'fixture-client',consent:true,callback:'near-dot://setup/complete'});assert.equal(setupPresentation(grant).qrPayload,grant.link);
+assert.equal(authority.redeem({link:grant.link,audience:'fixture-client',consent:true,acceptedPermissions:['chat']}).ok,true);assert.equal(authority.redeem({link:grant.link,audience:'fixture-client',consent:true,acceptedPermissions:['chat']}).code,'replayed');void [composeMcpUI,authorizeMcpAction];console.log('Installed mobile declarations and setup single-use authority fail closed; no native or network side effects.');

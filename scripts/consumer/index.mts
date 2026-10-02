@@ -72,3 +72,11 @@ import {observeSource} from 'near-function/deploy/repositories';
 import {withDeploymentSource} from 'near-function/requirements';
 const source=defineSource({kind:'mirror',model:{id:'model',revision:'a'.repeat(40)},implementation:{id:'implementation',revision:'b'.repeat(40)},artifacts:[{path:'dist/app.js',receipt:'dist/receipt.json',sha256:'c'.repeat(64)}]});
 const sourceObservation=await observeSource(source,{});sourceSteps(source,sourceObservation);withDeploymentSource(openDotRequirements,source);
+
+import {mobileCases,planMobileTarget} from 'near-function/platform';
+import {defineBackend,checkConnection,setupPresentation} from 'near-function/setup';
+import {createSetupAuthority} from 'near-function/setup/server';
+import {composeMcpUI,authorizeMcpAction} from 'near-function/mcp-ui';
+const backend=defineBackend({id:'fixture',kind:'local-desktop',endpoint:'http://127.0.0.1:9462'});
+const authority=createSetupAuthority({dots:[{id:'fixture',ownerId:'owner',backend,permissions:['chat']}],callbackURLs:['near-dot://setup/complete']});
+const grant=authority.issue({dotId:'fixture',ownerId:'owner',audience:'client',consent:true,callback:'near-dot://setup/complete'});setupPresentation(grant);void [mobileCases,planMobileTarget,checkConnection,composeMcpUI,authorizeMcpAction];

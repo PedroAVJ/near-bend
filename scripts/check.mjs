@@ -11,7 +11,7 @@ for(let i=0;i<dirs.length;i++) {
  if(!p.files?.length || !p.exports || !(p.types || p.exports['.']?.types))throw Error(`Missing package surface: ${p.name}`);
  for(const value of Object.values(p.exports)){for(const path of typeof value==='string'?[value]:Object.values(value)){if(!path.includes('*')&&!existsSync(join(at,path)))throw Error(`Missing export target ${path}`);}}
  if(Object.keys(p.dependencies??{}).some(x=>['near-bend-ai-sdk','near-open-dot','near-v','near-function'].includes(x)))throw Error('Old standalone dependency');
- for(const entry of ['near-function.bend','near-v.bend','f.bend','stdlib/ai/ai-sdk.bend','stdlib/dot/bend/session.bend','stdlib/dot/bend/agent.bend','stdlib/dot/bend/native.bend','stdlib/dot/bend/attachments.bend','stdlib/dot/bend/vision.bend','deployment/near-function.bend','deployment/tests/planner.bend','deployment/tests/source.bend']){
+ for(const entry of ['near-function.bend','near-v.bend','f.bend','stdlib/ai/ai-sdk.bend','stdlib/dot/bend/session.bend','stdlib/dot/bend/agent.bend','stdlib/dot/bend/native.bend','stdlib/dot/bend/attachments.bend','stdlib/dot/bend/vision.bend','deployment/near-function.bend','deployment/tests/planner.bend','deployment/tests/source.bend','mobile/tests/native.bend']){
   readFileSync(join(at,entry));
   const r=spawnSync('bun',[compiler,join(at,entry),'--check-only'],{cwd:root,encoding:'utf8',timeout:120000,env:{...process.env,BEND_NO_TELEMETRY:'1'}});
   process.stdout.write(r.stdout+r.stderr); if(r.status!==0)process.exit(r.status??1);
@@ -21,3 +21,5 @@ function walk(at){for(const f of readdirSync(at)) {if(['node_modules','.git','di
 walk(join(root,'packages'));console.log('Package names, dependency boundary, Bend closures, internal symlinks and JS syntax pass.');
 
 const native=spawnSync('bun',[compiler,join(root,'packages/function/deployment/tests/source.bend')],{cwd:root,encoding:'utf8',timeout:120000,env:{...process.env,BEND_NO_TELEMETRY:'1'}});process.stdout.write(native.stdout+native.stderr);if(native.status!==0)process.exit(native.status??1);
+
+const mobileNative=spawnSync('bun',[compiler,join(root,'packages/function/mobile/tests/native.bend')],{cwd:root,encoding:'utf8',timeout:120000,env:{...process.env,BEND_NO_TELEMETRY:'1'}});process.stdout.write(mobileNative.stdout+mobileNative.stderr);if(mobileNative.status!==0)process.exit(mobileNative.status??1);

@@ -121,6 +121,22 @@
     "./deploy/repositories": {
       "types": "./deployment/src/repositories.d.ts",
       "import": "./deployment/src/repositories.js"
+    },
+    "./platform": {
+      "types": "./mobile/index.d.mts",
+      "import": "./mobile/index.mjs"
+    },
+    "./setup": {
+      "types": "./setup/client.d.ts",
+      "import": "./setup/client.mjs"
+    },
+    "./setup/server": {
+      "types": "./setup/server.d.ts",
+      "import": "./setup/server.mjs"
+    },
+    "./mcp-ui": {
+      "types": "./protocol/mcp-ui.d.ts",
+      "import": "./protocol/mcp-ui.mjs"
     }
   },
   "files": [
@@ -157,10 +173,19 @@
     "stdlib/ai/bend/WIRE_JSON_LICENSE",
     "stdlib/ai/bend/PROVENANCE.md",
     "stdlib/ai/native-host/LICENSE",
-    "deployment/near-v.bend"
+    "deployment/near-v.bend",
+    "mobile/*.mjs",
+    "mobile/*.d.mts",
+    "mobile/bend",
+    "mobile/README.md",
+    "setup/*.mjs",
+    "setup/*.d.ts",
+    "setup/README.md",
+    "protocol/*.mjs",
+    "protocol/*.d.ts"
   ],
   "scripts": {
-    "test": "node --test --test-concurrency=1 tests/*.test.mjs stdlib/ai/tests/*.test.mjs stdlib/dot/tests/*.test.mjs deployment/tests/*.test.js stdlib/ai/native-host/tests/*.test.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs stdlib/ai/tests/*.test.mjs stdlib/dot/tests/*.test.mjs deployment/tests/*.test.js stdlib/ai/native-host/tests/*.test.mjs mobile/tests/*.test.mjs setup/tests/*.test.mjs",
     "build": "node stdlib/dot/scripts/build.mjs",
     "template": "node deployment/templates/open-dot/server.mjs",
     "dryrun": "node deployment/bin/near-function.js dryrun --template dot --first-install"
