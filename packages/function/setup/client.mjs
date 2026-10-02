@@ -5,7 +5,8 @@ export function defineBackend(input) {
   if (!['local-desktop', 'remote-private'].includes(input.kind)) throw new TypeError('Invalid backend kind');
   const endpoint = new URL(input.endpoint);
   if (endpoint.username || endpoint.password || endpoint.search || endpoint.hash) throw new TypeError('Backend URL must not contain credentials or parameters');
-  const loopback = ['localhost', '127.0.0.1', '[::1]'].includes(endpoint.hostname);
+  const hostname = endpoint.hostname.toLowerCase().replace(/\.$/, '');
+  const loopback = hostname === 'localhost' || hostname.endsWith('.localhost') || /^127\./.test(hostname) || hostname === '[::1]' || /^\[::ffff:7f[0-9a-f]{2}:/.test(hostname);
   if (input.kind === 'local-desktop' ? !loopback || !['http:', 'https:'].includes(endpoint.protocol) : endpoint.protocol !== 'https:' || loopback) throw new TypeError('Invalid backend transport');
   return Object.freeze({ id: input.id, kind: input.kind, endpoint: endpoint.href });
 }

@@ -15,7 +15,7 @@ function permissions(values) {
 // Local reference adapter. Its caller must supply authenticated principal IDs.
 // Codes never contain or authorize provider credentials. Map mutation is atomic
 // within this process; a multi-process backend must use transactional storage.
-export function createSetupAuthority({ dots, callbackURLs, now = Date.now, maxTTL = 300_000 }) {
+export function createSetupAuthority({ dots, callbackURLs, now = Date.now, maxTTL = 300_000, state }) {
   if (!Number.isInteger(maxTTL) || maxTTL < 1 || maxTTL > 300_000) throw new TypeError('Maximum TTL is five minutes');
   const callbacks = new Set(callbackURLs.map(value => {
     const url = new URL(value);
@@ -25,8 +25,8 @@ export function createSetupAuthority({ dots, callbackURLs, now = Date.now, maxTT
   }));
   const known = new Map(dots.map(dot => [id(dot.id), Object.freeze({ id: dot.id, ownerId: id(dot.ownerId), backend: defineBackend(dot.backend), permissions: permissions(dot.permissions) })]));
   if (known.size !== dots.length) throw new TypeError('Duplicate Dot IDs');
-  const grants = new Map();
-  const pairings = new Map();
+  const grants = state?.grants ?? new Map();
+  const pairings = state?.pairings ?? new Map();
   function issue({ dotId, ownerId, audience, consent, callback, ttl = maxTTL }) {
     const dot = known.get(id(dotId));
     if (!dot || dot.ownerId !== id(ownerId) || consent !== true) throw new Error('Explicit authenticated owner consent required');

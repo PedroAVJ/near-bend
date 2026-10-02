@@ -141,6 +141,14 @@
     "./deploy/targets": {
       "types": "./deployment/targets/index.d.mts",
       "import": "./deployment/targets/index.mjs"
+    },
+    "./setup/host": {
+      "types": "./setup/host.d.ts",
+      "import": "./setup/host.mjs"
+    },
+    "./setup/workspace": {
+      "types": "./setup/workspace.d.ts",
+      "import": "./setup/workspace.mjs"
     }
   },
   "files": [
@@ -189,7 +197,8 @@
     "protocol/*.d.ts",
     "deployment/targets/*.mjs",
     "deployment/targets/*.d.mts",
-    "deployment/targets/README.md"
+    "deployment/targets/README.md",
+    "setup/PROTOCOL.md"
   ],
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.mjs stdlib/ai/tests/*.test.mjs stdlib/dot/tests/*.test.mjs deployment/tests/*.test.js stdlib/ai/native-host/tests/*.test.mjs mobile/tests/*.test.mjs setup/tests/*.test.mjs deployment/targets/tests/*.test.mjs",

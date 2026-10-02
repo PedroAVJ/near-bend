@@ -4,6 +4,8 @@ const capabilityNames=['ui','network','microphone','camera','notifications','fil
 const nativeNames=capabilityNames.filter(x=>!['ui','network'].includes(x));
 const id=x=>typeof x==='string'&&/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/.test(x);
 const text=x=>typeof x==='string'&&x.length>0&&x.length<=512&&!/[\u0000-\u001f]/.test(x);
+// URL canonicalizes numeric IPv4 and IPv4-mapped IPv6 before this check.
+const loopbackHostname=value=>{const host=value.toLowerCase().replace(/\.$/,'');return host==='localhost'||host.endsWith('.localhost')||/^127\./.test(host)||host==='[::1]'||/^\[::ffff:7f[0-9a-f]{2}:/.test(host)};
 export const mobileCapabilities=freeze(Object.fromEntries(['ios','android'].map(platform=>[platform,Object.fromEntries(capabilityNames.map(name=>[name,{status:'declared',nativeAdapter:false,api:({ios:{ui:'WKWebView / UIKit',network:'URLSession / App Transport Security',microphone:'AVAudioSession / microphone consent',camera:'AVFoundation / camera consent',notifications:'UserNotifications / authorization','file-picker':'UIDocumentPickerViewController','secure-storage':'Keychain Services','deep-link':'Universal Links / associated domains'},android:{ui:'WebView / Android views',network:'HTTP client / INTERNET permission',microphone:'AudioRecord / RECORD_AUDIO',camera:'CameraX / CAMERA',notifications:'NotificationManager / notification permission','file-picker':'Storage Access Framework','secure-storage':'Android Keystore','deep-link':'verified Android App Links'}})[platform][name]}]))])));
 export function defineMobileTarget(value){
   if(!value||!['ios','android'].includes(value.platform)||!id(value.applicationId)||!text(value.version))throw new TypeError('Mobile platform, applicationId and version required');
@@ -12,7 +14,7 @@ export function defineMobileTarget(value){
   const b=value.backend;
   if(!b||!['local-desktop','remote-private'].includes(b.kind)||!id(b.id))throw new TypeError('Explicit backend required');
   let endpoint;try{endpoint=new URL(b.endpoint)}catch{throw new TypeError('Backend endpoint required')}
-  if(endpoint.protocol!=='https:'||endpoint.username||endpoint.password||endpoint.search||endpoint.hash||['localhost','127.0.0.1','[::1]'].includes(endpoint.hostname))throw new TypeError('Mobile backend requires credential-free HTTPS endpoint; phone loopback is not desktop');
+  if(endpoint.protocol!=='https:'||endpoint.username||endpoint.password||endpoint.search||endpoint.hash||loopbackHostname(endpoint.hostname))throw new TypeError('Mobile backend requires credential-free HTTPS endpoint; phone loopback is not desktop');
   if(!['lan','private-relay','remote'].includes(b.transport)||(b.kind==='local-desktop'&&b.transport==='remote')||(b.kind==='remote-private'&&b.transport!=='remote'))throw new TypeError('Backend transport must match placement');
   if(!['app-store','google-play','development'].includes(value.distribution)||(value.platform==='ios'&&value.distribution==='google-play')||(value.platform==='android'&&value.distribution==='app-store'))throw new TypeError('Invalid distribution');
   return freeze({platform:value.platform,applicationId:value.applicationId,version:value.version,ui:value.ui,capabilities:[...value.capabilities],backend:{kind:b.kind,id:b.id,endpoint:endpoint.href,transport:b.transport},distribution:value.distribution});

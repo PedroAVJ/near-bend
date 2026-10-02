@@ -11,3 +11,10 @@ test('iOS interpreted UI native API bridge needs separate Apple permission',()=>
 test('denied runtime capability and missing explicit service consent block',()=>{const o=complete();o.implementedCapabilities=['ui'];assert.equal(planMobileTarget(target,o).ready,false);const q=complete();q.checks['per-service-consent']=false;assert.equal(planMobileTarget(target,q).ready,false)});
 test('reject credentials, provider-key queries, loopback, unsafe schemes and wrong target',()=>{for(const endpoint of ['http://dot.example.invalid','https://user:pass@dot.example.invalid','https://dot.example.invalid?api_key=secret','https://127.0.0.1','javascript:alert(1)'])assert.throws(()=>defineMobileTarget({...target,backend:{...target.backend,endpoint}}));assert.throws(()=>defineMobileTarget({...target,capabilities:['shell']}));assert.throws(()=>defineMobileTarget({...target,distribution:'google-play'}))});
 test('development distribution still requires native runtime and security observations',()=>{const t=defineMobileTarget({...mobileCases[1].target,distribution:'development'}),r=mobileDeploymentRequirements(t);assert.deepEqual(r.externalApprovals,[]);assert.equal(planMobileTarget(t).ready,false);assert.ok(r.checks.includes('sandbox-isolation'))});
+
+test('mobile private routes reject loopback aliases while accepting explicit private network addresses',()=>{
+ for(const endpoint of ['https://127.0.0.2','https://127.255.255.254','https://127.1','https://2130706434','https://[::1]','https://[::ffff:127.0.0.2]','https://[::ffff:7fff:fffe]','https://localhost.','https://client.localhost']){
+  for(const template of mobileCases)assert.throws(()=>defineMobileTarget({...template.target,backend:{...template.target.backend,endpoint}}),/phone loopback/);
+ }
+ for(const endpoint of ['https://192.168.1.5','https://10.0.0.2','https://[fd00::1]','https://[::ffff:192.168.1.5]','https://localhost.example.invalid'])assert.equal(defineMobileTarget({...target,backend:{...target.backend,endpoint}}).backend.endpoint,new URL(endpoint).href);
+});

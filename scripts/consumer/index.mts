@@ -85,3 +85,10 @@ import {createDotClient} from 'near-dot';import type {DotAdapter} from 'near-dot
 import {createDotPreview} from 'near-dot/preview';
 import {planReleaseTargets} from 'near-function/deploy/targets';
 const targetPlan=planReleaseTargets(['github-source']);const dotPreview=createDotPreview();void [createDotClient,targetPlan,dotPreview];const dotAdapter:DotAdapter|undefined=undefined;void dotAdapter;
+
+import {createDurableSetupAuthority,createSetupHttpHandler,setupProtocol} from 'near-function/setup/host';
+const durableAuthority=createDurableSetupAuthority({store:{async transaction(operation){return operation({version:1,grants:[],pairings:[],sessions:[]});}},dots:[],callbackURLs:[]});
+const httpHandler=createSetupHttpHandler({authority:durableAuthority,authenticate:()=>null});void [httpHandler,setupProtocol];
+
+import {createWorkspaceRuntime} from 'near-function/setup/workspace';
+const workspaceRuntime=createWorkspaceRuntime({store:{async transaction(operation){return operation({version:1,grants:[],pairings:[],sessions:[]});}},dots:[]});void workspaceRuntime;

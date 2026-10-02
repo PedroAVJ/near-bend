@@ -69,3 +69,11 @@ test('private mobile route requires a credential-free HTTPS endpoint',()=>{
  assert.equal(checkConnection(backend,client,evidence).code,'local-backend-unreachable');
  for(const privateEndpoint of ['http://desktop.private.invalid/','https://localhost/','https://user:secret@desktop.private.invalid/','https://desktop.private.invalid/?token=secret']) assert.equal(checkConnection(backend,client,{...evidence,privateEndpoint}).code,'unsafe-private-route');
 });
+
+test('private routes reject all literal loopback aliases',()=>{
+ for(const endpoint of ['https://127.0.0.2/','https://127.255.255.254/','https://[::ffff:127.0.0.1]/','https://localhost./','https://device.localhost/']) {
+  assert.throws(()=>defineBackend({id:'remote',kind:'remote-private',endpoint}),/transport/);
+  assert.equal(checkConnection(backend,{installed:true,authenticated:true,platform:'ios'},{network:'reachable',backend:'running',protocol:'compatible',authorization:'verified',route:'private-route',privateEndpoint:endpoint}).code,'unsafe-private-route');
+ }
+ assert.equal(defineBackend({id:'local',kind:'local-desktop',endpoint:'http://127.0.0.2/'}).kind,'local-desktop');
+});
