@@ -1,4 +1,3 @@
-# Compatibility source entry; canonical package entry uses near-function.
 # near-function: one application package, with selectively usable standard-library modules.
 # This umbrella entry checks the complete pure typed closure; IO is host-side.
 import Base

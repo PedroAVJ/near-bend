@@ -13,7 +13,7 @@ The pinned compiler supports foreign definitions returning Base `IO(...)` direct
 Compile a Bend program whose filled `main` returns IO to `.js`, adapt it with `embedNativeMain(source)` and write the resulting `.mjs` locally. The adapter checks the exact pinned compiler CLI tail and replaces it with a main factory; it does not modify the compiler or original program. Import that factory, then:
 
 ```js
-import {createAsyncNativeHost, installNativeHost, runNativeIO} from 'near-v/ai/native-host';
+import {createAsyncNativeHost, installNativeHost, runNativeIO} from 'near-function/ai/native-host';
 import main from './compiled-main.mjs';
 const host = createAsyncNativeHost({http: injectedRawHttp, credentials: privateRefs});
 const remove = installNativeHost(host);
@@ -34,10 +34,10 @@ node --test packages/function/stdlib/ai/native-host/tests/host.test.mjs
 
 The fixture compiles with the vendored compiler, executes actual Bend main IO, checks absent/async-host fail-closed behavior, opaque requests and chunks, host-private credentials, handles, close, limits, timeout and abort. Foreign effects necessarily fall outside `--check-only`'s proof-safe closure; ordinary `-o` compilation still typechecks the program.
 
-`near-v/ai/native-fetch` provides the generic physical HTTPS transport. It is inert by default and requires `allowRequests:true`, explicit allowed HTTPS origins and host-private credential headers. Its text reader performs streaming UTF-8 decoding; its byte reader preserves raw binary. Mixing reader modes is rejected. Body/chunk/response bounds, cancellation and pending-open disposal are verified with injected fetch implementations. Provider request/event interpretation remains in Bend. Actual external HTTPS calls remain unrun.
+`near-function/ai/native-fetch` provides the generic physical HTTPS transport. It is inert by default and requires `allowRequests:true`, explicit allowed HTTPS origins and host-private credential headers. Its text reader performs streaming UTF-8 decoding; its byte reader preserves raw binary. Mixing reader modes is rejected. Body/chunk/response bounds, cancellation and pending-open disposal are verified with injected fetch implementations. Provider request/event interpretation remains in Bend. Actual external HTTPS calls remain unrun.
 
 ## Generic multipart uploads
 
 `FormField{name,value}` and `HTTP.multipart_open(credential,url,headers,fields,filename,mime_type,bytes)` extend the raw boundary for binary file uploads. The host marshals a bounded list of string fields and integer bytes; provider field encoding and response decoding remain in Bend. Supply `multipart` alongside other explicit factories when creating the sync or async host. The separate upload bound defaults to 32 MiB, with at most 64 fields. The ABI preserves opaque server-private credential references and fails closed when the host or required async driver is absent.
 
-`createMultipartFetchTransport` (`near-v/ai/native-multipart`) provides a generic physical asynchronous FormData factory. It requires explicit `allowRequests: true` and HTTPS origin allowlisting. It reuses the raw fetch resource's redirect, credential, chunk/response bounds, UTF-8/binary reads and disposal behavior. It owns only physical multipart assembly: all field names and values are caller data. It rejects caller-supplied Content-Type so fetch can create the correct boundary. Production provider operation remains unverified; the new multipart fixtures await serial verification.
+`createMultipartFetchTransport` (`near-function/ai/native-multipart`) provides a generic physical asynchronous FormData factory. It requires explicit `allowRequests: true` and HTTPS origin allowlisting. It reuses the raw fetch resource's redirect, credential, chunk/response bounds, UTF-8/binary reads and disposal behavior. It owns only physical multipart assembly: all field names and values are caller data. It rejects caller-supplied Content-Type so fetch can create the correct boundary. Production provider operation remains unverified; the new multipart fixtures await serial verification.

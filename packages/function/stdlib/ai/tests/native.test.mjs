@@ -6,7 +6,7 @@ import {join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 const root=resolve(import.meta.dirname,'../../../../..');
-const temp=mkdtempSync(join(tmpdir(),'near-v-native-ai-'));
+const temp=mkdtempSync(join(tmpdir(),'near-function-native-ai-'));
 const modules={};
 for(const name of ['requests','codecs','protocol','speech']){
  const source=join(root,'packages/function/stdlib/ai/bend',name+'.bend'),out=join(temp,name+'.mjs');

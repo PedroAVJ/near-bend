@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';
-import {embedNativeMain,createAsyncNativeHost,runNativeIO} from './node_modules/near-v/stdlib/ai/native-host/async.mjs';
-import {installNativeHost} from './node_modules/near-v/stdlib/ai/native-host/host.mjs';
-import {createFetchTransport} from './node_modules/near-v/stdlib/ai/native-host/raw-fetch.mjs';
+import {embedNativeMain,createAsyncNativeHost,runNativeIO} from './node_modules/near-function/stdlib/ai/native-host/async.mjs';
+import {installNativeHost} from './node_modules/near-function/stdlib/ai/native-host/host.mjs';
+import {createFetchTransport} from './node_modules/near-function/stdlib/ai/native-host/raw-fetch.mjs';
 writeFileSync('speech-program.mjs',embedNativeMain(readFileSync('speech-program.js','utf8')));const {default:main}=await import('./speech-program.mjs');
 const rows=list=>{const bytes=[];while(list.$==='Con'){bytes.push(list.head);list=list.tail}assert.equal(list.$,'Nil');return bytes};
 globalThis.fetch=()=>{throw Error('Network forbidden')};

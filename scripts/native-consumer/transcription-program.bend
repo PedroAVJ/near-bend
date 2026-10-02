@@ -1,6 +1,6 @@
 import Base
-import ./node_modules/near-v/stdlib/ai/bend/transcription.bend as T
-import ./node_modules/near-v/stdlib/ai/bend/transcription-runtime.bend as R
+import ./node_modules/near-function/stdlib/ai/bend/transcription.bend as T
+import ./node_modules/near-function/stdlib/ai/bend/transcription-runtime.bend as R
 
 def session(p: R.TranscriptionPoll) -> R.TranscriptionSession:
   match p:

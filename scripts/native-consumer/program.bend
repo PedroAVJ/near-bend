@@ -1,9 +1,9 @@
 import Base
-import ./node_modules/near-v/stdlib/ai/bend/requests.bend as Requests
-import ./node_modules/near-v/stdlib/ai/bend/protocol.bend as Protocol
-import ./node_modules/near-v/stdlib/ai/bend/runtime.bend as Runtime
-import ./node_modules/near-v/stdlib/dot/bend/session.bend as Dot
-import ./node_modules/near-v/stdlib/dot/bend/agent.bend as Native
+import ./node_modules/near-function/stdlib/ai/bend/requests.bend as Requests
+import ./node_modules/near-function/stdlib/ai/bend/protocol.bend as Protocol
+import ./node_modules/near-function/stdlib/ai/bend/runtime.bend as Runtime
+import ./node_modules/near-function/stdlib/dot/bend/session.bend as Dot
+import ./node_modules/near-function/stdlib/dot/bend/agent.bend as Native
 
 def message() -> Dot.Message:
   Dot.Message{"native-assistant", Dot.AssistantMessage{}, Dot.ChatMessage{}, "", Dot.StreamingMessage{}}

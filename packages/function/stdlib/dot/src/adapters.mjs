@@ -1,4 +1,4 @@
-import {ProviderError} from 'near-v/ai';
+import {ProviderError} from 'near-function/ai';
 const fail=(provider,message)=>{throw new ProviderError(provider,'dot_protocol',message)};
 const text=(value,provider)=>{if(typeof value!=='string')fail(provider,'Expected text string');return value};
 const history=request=>request.messages?.length?request.messages.map(({role,text})=>({role,content:text})): [{role:'user',content:request.prompt}];

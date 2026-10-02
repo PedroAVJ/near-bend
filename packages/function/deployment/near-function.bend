@@ -1,4 +1,3 @@
-# Compatibility source entry; canonical package entry uses near-function.
 import Base
 import ./bend/general/rose/PROOF.bend as V0
 import ./bend/domain/architecture/PROOF.bend as V1

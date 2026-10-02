@@ -6,7 +6,7 @@ import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createTemplateServer} from '../templates/open-dot/server.mjs';
-import {openDotRequirements,dotRequirementsFor} from 'near-v/requirements';
+import {openDotRequirements,dotRequirementsFor} from 'near-function/requirements';
 import {planApplication} from '../src/index.js';
 const packageRoot=fileURLToPath(new URL('../..',import.meta.url));
 const monorepo=resolve(packageRoot,'../..');
@@ -23,13 +23,13 @@ test('template construction is inert and storage/provider choices are explicit',
  assert.throws(()=>createTemplateServer(),/Choose storage/);assert.throws(()=>createTemplateServer({storage:'file'}),/storagePath/);
  assert.throws(()=>createTemplateServer({storage:'none',host:'0.0.0.0'}),/loopback/);
  assert.throws(()=>createTemplateServer({storage:'none',provider:{kind:'openrouter',apiKey:'not-real',model:'test'}}),/allowPaidRequests/);
- const dir=await mkdtemp(join(tmpdir(),'near-v-template-inert-'));try{
+ const dir=await mkdtemp(join(tmpdir(),'near-function-template-inert-'));try{
   let requests=0;const app=createTemplateServer({storage:'file',storagePath:join(dir,'history.json'),provider:{kind:'openrouter',allowPaidRequests:true,model:'test',apiKey:'not-real',fetch:()=>{requests++;throw Error('No network')}}});
   assert.equal(app.server.listening,false);assert.equal(requests,0);assert.deepEqual(await readdir(dir),[]);assert.equal(app.assistant.snapshot().permissions.persistence,false);
  }finally{await rm(dir,{recursive:true,force:true})}
 });
 test('mock host template permissions, lifecycle, continuity and explicit file persistence',async()=>{
- const dir=await mkdtemp(join(tmpdir(),'near-v-template-local-'));const path=join(dir,'history.json');
+ const dir=await mkdtemp(join(tmpdir(),'near-function-template-local-'));const path=join(dir,'history.json');
  const app=createTemplateServer({storage:'file',storagePath:path,port:0});
  try{
   const url=await app.listen();

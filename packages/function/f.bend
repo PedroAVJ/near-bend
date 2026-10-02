@@ -8,3 +8,8 @@ import ./kit.bend as Kit
 import ./symbols.bend as Symbols
 import ./nearling.bend as Nearling
 import ./components.bend as Components
+
+# F includes deployment definitions and exact source/artifact provenance checks.
+import ./deployment/near-function.bend as Deployment
+import ./deployment/bend/source/type.bend as Source
+import ./deployment/bend/source/ops.bend as SourceChecks

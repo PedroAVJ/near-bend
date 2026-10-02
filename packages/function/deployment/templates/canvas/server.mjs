@@ -2,8 +2,8 @@ import {createServer} from 'node:http';
 import {readFile,realpath,stat} from 'node:fs/promises';
 import {resolve,sep,extname} from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {canvasRequirements} from 'near-v/requirements';
-import {planApplication} from 'near-v/deploy';
+import {canvasRequirements} from 'near-function/requirements';
+import {planApplication} from 'near-function/deploy';
 const types={'.html':'text/html','.mjs':'text/javascript','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp'};
 /** Preview a prebuilt canvas artifact explicitly chosen by the caller; no build or setup command. */
 export function createCanvasPreview({artifactRoot,port=9472,host='127.0.0.1'}={}){

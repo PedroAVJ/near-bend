@@ -2,15 +2,15 @@ import {createServer} from 'node:http';
 import {readFile, writeFile, mkdir, unlink} from 'node:fs/promises';
 import {dirname,resolve} from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
-import {createAssistant,createMemoryPersistence} from 'near-v/dot';
-import {MockAgent} from 'near-v/ai/mock';
-import {OpenRouterClient,OpenAIClient,AnthropicClient,ClaudeCliAdapter} from 'near-v/ai';
-import {createMemoryAssetStore} from 'near-v/dot/assets';
-import {ElevenLabsTranscriber} from 'near-v/dot/transcription';
-import {OpenAIRealtimeClient} from 'near-v/ai/live';
-import {OpenRouterAgent,OpenAIResponsesAgent,AnthropicMessagesAgent,ClaudeAgent} from 'near-v/dot/adapters';
-import {openDotRequirements,dotRequirementsFor} from 'near-v/requirements';
-import {planApplication} from 'near-v/deploy';
+import {createAssistant,createMemoryPersistence} from 'near-function/dot';
+import {MockAgent} from 'near-function/ai/mock';
+import {OpenRouterClient,OpenAIClient,AnthropicClient,ClaudeCliAdapter} from 'near-function/ai';
+import {createMemoryAssetStore} from 'near-function/dot/assets';
+import {ElevenLabsTranscriber} from 'near-function/dot/transcription';
+import {OpenAIRealtimeClient} from 'near-function/ai/live';
+import {OpenRouterAgent,OpenAIResponsesAgent,AnthropicMessagesAgent,ClaudeAgent} from 'near-function/dot/adapters';
+import {openDotRequirements,dotRequirementsFor} from 'near-function/requirements';
+import {planApplication} from 'near-function/deploy';
 
 const here=dirname(fileURLToPath(import.meta.url));
 const packageRoot=resolve(here,'../../..');
@@ -34,7 +34,7 @@ export function createTemplateServer({storage,storagePath,provider={kind:'mock'}
   if(!gptLive||gptLive.allowPaidRequests!==true)throw new TypeError('GPT-Live requires explicit allowPaidRequests');
   if(typeof gptLive.model!=='string'||!gptLive.model.trim())throw new TypeError('GPT-Live model required');
   if(!gptLive.client&&(typeof gptLive.apiKey!=='string'||!gptLive.apiKey.trim()))throw new TypeError('GPT-Live apiKey required');
-  let client=gptLive.client;gptLiveClient={async connect(options){if(!client){const {GPTLiveClient}=await import('near-v/ai/gpt-live');client=new GPTLiveClient({apiKey:gptLive.apiKey,socketFactory:gptLive.socketFactory})}return client.connect(options)}};
+  let client=gptLive.client;gptLiveClient={async connect(options){if(!client){const {GPTLiveClient}=await import('near-function/ai/gpt-live');client=new GPTLiveClient({apiKey:gptLive.apiKey,socketFactory:gptLive.socketFactory})}return client.connect(options)}};
  }
  const voiceClient=realtimeClient??gptLiveClient,voiceProtocol=realtimeClient?'openaiRealtime':gptLiveClient?'gptLive':null;
  const assetStore=createMemoryAssetStore({urlFor:id=>'/api/assets/'+encodeURIComponent(id)});
@@ -141,7 +141,7 @@ export function createTemplateServer({storage,storagePath,provider={kind:'mock'}
   try{
    if(!wsServer){const {WebSocketServer}=await import('ws');wsServer=new WebSocketServer({noServer:true,maxPayload:cameraContext==='none'?65536:393216,perMessageDeflate:false})}
    if(!assistant.snapshot().inCall||!assistant.snapshot().permissions.microphone){if(voiceBusy===reservation)voiceBusy=false;reject('403 Forbidden');return}
-   const createVoiceBridge=realtimeClient?(await import('near-v/dot/live')).createRealtimeCallBridge:(await import('near-v/dot/gpt-live')).createGPTLiveCallBridge;
+   const createVoiceBridge=realtimeClient?(await import('near-function/dot/live')).createRealtimeCallBridge:(await import('near-function/dot/gpt-live')).createGPTLiveCallBridge;
    wsServer.handleUpgrade(req,socket,head,ws=>{
     const close=()=>{ws.close();voiceConnections.delete(connection);if(voiceBusy===reservation)voiceBusy=false};
     const connection={ws,bridge:null};voiceConnections.add(connection);

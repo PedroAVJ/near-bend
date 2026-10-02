@@ -1,6 +1,6 @@
 import Base
 import ../bend/general/percent.bend as Percent
-import ../near-v.bend as V
+import ../near-function.bend as V
 import ../bend/domain/architecture/system/release/type.bend as R
 import ../bend/domain/architecture/system/plan/type.bend as P
 import ../bend/domain/architecture/system/plan/ops.bend as PO
@@ -9,13 +9,13 @@ import ../bend/domain/architecture/system/deployment/ops.bend as DO
 
 # These are pure values. No host effect or process driver is imported.
 def missing_snapshot() -> Bool:
-  PO.any_blocked(PO.package_steps([R.Package{"near-v", "0.1.0.0", "near-v.bend", []}], []))
+  PO.any_blocked(PO.package_steps([R.Package{"near-function", "0.1.0.0", "near-function.bend", []}], []))
 
 def changed_version() -> Bool:
-  PO.blocked(PO.package_step(R.Package{"near-v", "0.1.0.0", "near-v.bend", []}, P.Differs{"near-v.bend"}))
+  PO.blocked(PO.package_step(R.Package{"near-function", "0.1.0.0", "near-function.bend", []}, P.Differs{"near-function.bend"}))
 
 def new_release() -> Bool:
-  String.eq(PO.show(PO.package_step(R.Package{"near-v", "0.1.0.0", "near-v.bend", []}, P.Unpublished{})), "publish  near-v@0.1.0.0")
+  String.eq(PO.show(PO.package_step(R.Package{"near-function", "0.1.0.0", "near-function.bend", []}, P.Unpublished{})), "publish  near-function@0.1.0.0")
 
 def continuity() -> Bool:
   DO.breaks_eq(DO.breaks("before", ["history"], D.Deployment{"after", [], [], []}), [D.AddressChanged{}, D.StoreRemoved{"history"}])
@@ -33,4 +33,4 @@ def percent_invalid() -> Bool:
   Bool.not(Maybe.is_some(&2, String, Percent.decode("%F4%90%80%80")))
 
 def main() -> IO(Unit):
-  Bool.pick(IO(Unit), missing_snapshot() && changed_version() && new_release() && continuity() && records() && percent_valid() && percent_invalid(), IO.print("near-v: 7 pure Bend planning checks passed"), IO.die(Unit, 1, "near-v pure planning checks failed"))
+  Bool.pick(IO(Unit), missing_snapshot() && changed_version() && new_release() && continuity() && records() && percent_valid() && percent_invalid(), IO.print("near-function: 7 pure Bend planning checks passed"), IO.die(Unit, 1, "near-function pure planning checks failed"))

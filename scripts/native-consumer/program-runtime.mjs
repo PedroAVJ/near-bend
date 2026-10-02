@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';
-import {embedNativeMain,createAsyncNativeHost,runNativeIO} from './node_modules/near-v/stdlib/ai/native-host/async.mjs';
-import {createFetchTransport} from './node_modules/near-v/stdlib/ai/native-host/raw-fetch.mjs';
-import {installNativeHost} from './node_modules/near-v/stdlib/ai/native-host/host.mjs';
+import {embedNativeMain,createAsyncNativeHost,runNativeIO} from './node_modules/near-function/stdlib/ai/native-host/async.mjs';
+import {createFetchTransport} from './node_modules/near-function/stdlib/ai/native-host/raw-fetch.mjs';
+import {installNativeHost} from './node_modules/near-function/stdlib/ai/native-host/host.mjs';
 writeFileSync('program.mjs',embedNativeMain(readFileSync('program.js','utf8')));const {default:main}=await import('./program.mjs');
 globalThis.fetch=()=>{throw Error('Network forbidden')};
 const delta=text=>'data: '+JSON.stringify({choices:[{delta:{content:text}}]})+'\r\n\r\n';

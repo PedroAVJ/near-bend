@@ -1,7 +1,7 @@
 # Browser composer and media messages
 
 Import `mountComposer`, `createVoiceRecorder`, `createCameraAttachmentCapture` and
-`mountVoiceMessage` from `near-v/dot/browser`. Include `composer.css` alongside the
+`mountVoiceMessage` from `near-function/dot/browser`. Include `composer.css` alongside the
 existing assistant styles. Browser module routes must serve its relative imports
 `composer.mjs` and `voice-message.mjs`.
 
@@ -35,4 +35,4 @@ Dispose the composer to stop tracks and cancel unfinished recording/camera work.
 Tests inject device, recorder, playback, and canvas APIs. They do not request real
 permissions or invoke paid providers.
 
-Bundler consumers can import `near-v/dot/composer.css` for the standard controls.
+Bundler consumers can import `near-function/dot/composer.css` for the standard controls.

@@ -7,7 +7,7 @@ import {join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 const root=resolve(import.meta.dirname,'../../../../..');
-const temp=mkdtempSync(join(tmpdir(),'near-v-native-voice-'));
+const temp=mkdtempSync(join(tmpdir(),'near-function-native-voice-'));
 process.on('exit',()=>rmSync(temp,{recursive:true,force:true}));
 const source=join(root,'packages/function/stdlib/ai/bend/voice.bend'),out=join(temp,'voice.mjs');
 const compile=spawnSync('bun',[join(root,'tools/bend/main.ts'),source,'-o',out],{encoding:'utf8',timeout:60000,maxBuffer:8*1024*1024,env:{...process.env,BEND_NO_TELEMETRY:'1'}});

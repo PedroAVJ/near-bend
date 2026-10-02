@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';import {readFileSync,writeFileSync} from 'node:fs';
-import {embedNativeMain,createAsyncNativeHost,runNativeIO} from './node_modules/near-v/stdlib/ai/native-host/async.mjs';
-import {installNativeHost} from './node_modules/near-v/stdlib/ai/native-host/host.mjs';
-import {createMultipartFetchTransport} from './node_modules/near-v/stdlib/ai/native-host/raw-multipart.mjs';
+import {embedNativeMain,createAsyncNativeHost,runNativeIO} from './node_modules/near-function/stdlib/ai/native-host/async.mjs';
+import {installNativeHost} from './node_modules/near-function/stdlib/ai/native-host/host.mjs';
+import {createMultipartFetchTransport} from './node_modules/near-function/stdlib/ai/native-host/raw-multipart.mjs';
 writeFileSync('transcription-program.mjs',embedNativeMain(readFileSync('transcription-program.js','utf8')));const {default:main}=await import('./transcription-program.mjs');
 const kind=value=>value.$.split('.').at(-1);const rows=list=>{const result=[];while(list.$==='Con'){result.push(list.head);list=list.tail}assert.equal(list.$,'Nil');return result};
 globalThis.fetch=()=>{throw Error('Provider network forbidden in packed native transcription fixture')};

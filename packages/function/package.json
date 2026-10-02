@@ -1,8 +1,8 @@
 {
-  "name": "near-v",
+  "name": "near-function",
   "version": "0.1.0",
   "type": "module",
-  "description": "Experimental reusable Bend 2 UI, typed AI clients, assistant state/media and deployment planning",
+  "description": "F(s): composable Bend 2 UI/state, typed AI, assistant media and deployment modeling",
   "exports": {
     ".": {
       "types": "./index.d.ts",
@@ -39,12 +39,12 @@
       "types": "./deployment/src/index.d.ts",
       "import": "./deployment/src/index.js"
     },
-    "./deploy/bend": "./deployment/near-v.bend",
+    "./deploy/bend": "./deployment/near-function.bend",
     "./requirements": {
       "types": "./requirements.d.ts",
       "import": "./requirements.mjs"
     },
-    "./bend": "./near-v.bend",
+    "./bend": "./near-function.bend",
     "./templates/plan": {
       "types": "./deployment/templates/plan.d.ts",
       "import": "./deployment/templates/plan.mjs"
@@ -113,6 +113,14 @@
     "./templates/canvas/server": {
       "types": "./deployment/templates/canvas/server.d.ts",
       "import": "./deployment/templates/canvas/server.mjs"
+    },
+    "./deploy/source": {
+      "types": "./deployment/src/provenance.d.ts",
+      "import": "./deployment/src/provenance.js"
+    },
+    "./deploy/repositories": {
+      "types": "./deployment/src/repositories.d.ts",
+      "import": "./deployment/src/repositories.js"
     }
   },
   "files": [
@@ -137,7 +145,7 @@
     "deployment/src",
     "deployment/bin",
     "deployment/bend",
-    "deployment/near-v.bend",
+    "deployment/near-function.bend",
     "deployment/examples",
     "deployment/templates",
     "deployment/README.md",
@@ -148,13 +156,14 @@
     "stdlib/ai/bend/LICENSE",
     "stdlib/ai/bend/WIRE_JSON_LICENSE",
     "stdlib/ai/bend/PROVENANCE.md",
-    "stdlib/ai/native-host/LICENSE"
+    "stdlib/ai/native-host/LICENSE",
+    "deployment/near-v.bend"
   ],
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.mjs stdlib/ai/tests/*.test.mjs stdlib/dot/tests/*.test.mjs deployment/tests/*.test.js stdlib/ai/native-host/tests/*.test.mjs",
     "build": "node stdlib/dot/scripts/build.mjs",
     "template": "node deployment/templates/open-dot/server.mjs",
-    "dryrun": "node deployment/bin/near-v.js dryrun --template dot --first-install"
+    "dryrun": "node deployment/bin/near-function.js dryrun --template dot --first-install"
   },
   "engines": {
     "node": ">=22"
@@ -162,7 +171,8 @@
   "license": "MIT",
   "types": "./index.d.ts",
   "bin": {
-    "near-v": "./deployment/bin/near-v.js"
+    "near-function": "./deployment/bin/near-function.js",
+    "near-v": "./deployment/bin/near-function.js"
   },
   "optionalDependencies": {
     "ws": "8.22.0"

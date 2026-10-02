@@ -1,7 +1,7 @@
 import lifecycle from './generated/session.mjs';
 import attachments from './generated/attachments.mjs';
 import {createMemoryAssetStore} from './assets.mjs';
-import {MockAgent} from 'near-v/ai/mock';
+import {MockAgent} from 'near-function/ai/mock';
 
 // Boundary conversion only: Bend owns data reduction, JavaScript owns IO.
 const approvals={'not-required':'NoApprovalNeeded',pending:'AwaitingApproval',approved:'ExecutionApproved',rejected:'ExecutionRejected'};

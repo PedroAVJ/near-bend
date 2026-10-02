@@ -1,5 +1,5 @@
 import Base
-import ./node_modules/near-v/stdlib/ai/bend/voice.bend as Voice
+import ./node_modules/near-function/stdlib/ai/bend/voice.bend as Voice
 
 # Only dynamic arguments: raw JSON/state fixtures are injected by JavaScript.
 def rt_initial() -> Voice.RealtimeState:

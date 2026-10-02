@@ -1,3 +1,4 @@
+import {defineSource} from './deployment/src/provenance.js';
 /** F-owned application requirements. Deployment targets/configuration belong to V. */
 function freeze(value) {
   if (value && typeof value === 'object') {
@@ -37,3 +38,6 @@ export function dotRequirementsFor(provider = 'mock', options = {}) {
     })),
   });
 }
+
+/** Attach an explicit same-repository or mirror implementation binding to F requirements. */
+export function withDeploymentSource(requirements,source){return freeze({...structuredClone(requirements),source:defineSource(source)})}

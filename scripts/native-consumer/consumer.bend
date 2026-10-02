@@ -1,9 +1,9 @@
 import Base
-import ./node_modules/near-v/stdlib/ai/bend/requests.bend as Requests
-import ./node_modules/near-v/stdlib/ai/native-host/host.bend as Host
-import ./node_modules/near-v/stdlib/ai/bend/wire_json.bend as Wire
-import ./node_modules/near-v/stdlib/ai/ai-sdk.bend as AI
-import ./node_modules/near-v/stdlib/dot/bend/session.bend as Dot
+import ./node_modules/near-function/stdlib/ai/bend/requests.bend as Requests
+import ./node_modules/near-function/stdlib/ai/native-host/host.bend as Host
+import ./node_modules/near-function/stdlib/ai/bend/wire_json.bend as Wire
+import ./node_modules/near-function/stdlib/ai/ai-sdk.bend as AI
+import ./node_modules/near-function/stdlib/dot/bend/session.bend as Dot
 
 def provider_text() -> Bool:
   AI.supports_text(AI.OpenRouter{})

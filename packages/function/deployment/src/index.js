@@ -1,3 +1,4 @@
+import {defineSource,defineSourceObservation,sourceSteps,implementationPin} from './provenance.js';
 /** Offline deployment planning. This module has no I/O or execution adapters. */
 const identifier = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}$/;
 const version = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
@@ -40,12 +41,14 @@ export function defineDeployment(value) {
     services: value.services.map(s => ({ id: s.id, runtime: s.runtime, artifact: s.artifact, dependsOn: [...(s.dependsOn ?? [])], secretRefs: [...(s.secretRefs ?? [])], ...(s.port === undefined ? {} : {port: s.port}) })),
     stores: (value.stores ?? []).map(s => ({id: s.id, location: s.location})),
     acceptedBreaks: [...(value.acceptedBreaks ?? [])],
+    ...(value.source===undefined?{}:{source:defineSource(value.source)}),
   };
   // Graph structure stays an implementation detail; callers work with deployment services.
   for (const s of normalized.services) for (const dependency of s.dependsOn) {
     if (!ids.has(dependency)) throw new TypeError(`${s.id}: missing dependency ${dependency}`);
   }
   orderedServices(normalized.services);
+  if(normalized.source)for(const service of normalized.services)if(service.runtime!=='external'&&!normalized.source.artifacts.some(a=>a.path===service.artifact))throw new TypeError(service.id+': service artifact must be pinned in the actual implementation source');
   return deepFreeze(normalized);
 }
 
@@ -79,7 +82,7 @@ export function defineSnapshot(value) {
   if (value.previous !== undefined) {
     if (!record(value.previous) || !Array.isArray(value.previous.stores) || !value.previous.stores.every(s => record(s) && identifier.test(s.id ?? '') && typeof s.location === 'string') || (value.previous.address !== undefined && typeof value.previous.address !== 'string')) throw new TypeError('invalid previous deployment');
   }
-  return deepFreeze({ services, artifacts: {...value.artifacts}, availableSecretRefs: [...(value.availableSecretRefs ?? [])], ...(value.availableCapabilities===undefined?{}:{availableCapabilities:[...value.availableCapabilities]}), ...(value.previous === undefined ? {} : {previous: {address: value.previous.address, stores: value.previous.stores.map(s => ({id:s.id, location:s.location}))}}) });
+  return deepFreeze({ ...(value.source===undefined?{}:{source:defineSourceObservation(value.source)}), services, artifacts: {...value.artifacts}, availableSecretRefs: [...(value.availableSecretRefs ?? [])], ...(value.availableCapabilities===undefined?{}:{availableCapabilities:[...value.availableCapabilities]}), ...(value.previous === undefined ? {} : {previous: {address: value.previous.address, stores: value.previous.stores.map(s => ({id:s.id, location:s.location}))}}) });
 }
 
 /** @returns {import('./index.js').DeploymentPlan} */
@@ -115,15 +118,16 @@ export function planDeployment(definition, observation) {
     for (const change of breaks) add(d.acceptedBreaks.includes(change) ? 'change' : 'blocked', change, d.acceptedBreaks.includes(change) ? 'declared accepted breaking change' : 'breaking change requires explicit acceptedBreaks declaration');
     for (const id of Object.keys(o.services)) if (!d.services.some(s => s.id === id)) add('blocked', id, 'observed service removal requires a separate reviewed migration');
   } else add('unverified', 'previous-deployment', 'No prior deployment snapshot supplied; data continuity cannot be verified.');
+  if(d.source)steps.push(...sourceSteps(d.source,o?.source));
   const blocked = steps.some(s => s.status === 'blocked');
   const verified = !steps.some(s => s.status === 'unverified');
-  return deepFreeze({name:d.name, version:d.version, mode:'dry-run', executable:false, readyForReview:!blocked && verified, steps, breaks});
+  return deepFreeze({name:d.name, version:d.version, mode:'dry-run', executable:false, ...(d.source?{implementation:{repositoryId:implementationPin(d.source).id,intendedRevision:implementationPin(d.source).revision,...(o?.source?.implementation.status==='verified'?{root:o.source.implementation.root}:{})}}:{}), readyForReview:!blocked && verified, steps, breaks});
 }
 
 export function formatPlan(plan) {
-  return [`${plan.name}@${plan.version} — dry-run only`, ...plan.steps.map(s => `${s.status.padEnd(10)} ${s.subject}: ${s.detail}`), `Ready for review: ${plan.readyForReview ? 'yes' : 'no'}. Execution is unavailable.`].join('\n');
+  return [`${plan.name}@${plan.version} — dry-run only`, ...(plan.implementation?[`Implementation: ${plan.implementation.repositoryId}@${plan.implementation.intendedRevision}`]:[]), ...plan.steps.map(s => `${s.status.padEnd(10)} ${s.subject}: ${s.detail}`), `Ready for review: ${plan.readyForReview ? 'yes' : 'no'}. Execution is unavailable.`].join('\n');
 }
-export const capabilities = Object.freeze({definition:true, offlineChecks:true, snapshotPlanning:true, execution:false, liveObservation:false, automaticRollback:false, bendCompiledBridge:false});
+export const capabilities = Object.freeze({definition:true, offlineChecks:true, snapshotPlanning:true, execution:false, liveObservation:false, automaticRollback:false, bendCompiledBridge:false, repositoryProvenance:true, semanticEquivalence:false});
 
 /** Resolve inert application requirements against an explicit target. Never observes or configures it. */
 export function resolveDeployment(requirements,target) {
@@ -141,7 +145,7 @@ export function resolveDeployment(requirements,target) {
     const location=target.storeLocations?.[s.id];
     if(location===undefined){if(s.required)throw new TypeError(`Target storage required: ${s.id}`)}else stores.push({id:s.id,location});
   }
-  return defineDeployment({name:requirements.name,version:requirements.version,address:`${target.kind==='local'?'http':'https'}://${host}:${entry.port}`,services,stores,acceptedBreaks:target.acceptedBreaks??[]});
+  return defineDeployment({name:requirements.name,version:requirements.version,address:`${target.kind==='local'?'http':'https'}://${host}:${entry.port}`,services,stores,acceptedBreaks:target.acceptedBreaks??[],...(requirements.source===undefined?{}:{source:requirements.source})});
 }
 export function planApplication(requirements,target,observation) {
   if(!stringList(requirements.requiredCapabilities??[])||!stringList(observation?.availableCapabilities??[]))throw new TypeError('Capabilities must be explicit names');
@@ -150,6 +154,7 @@ export function planApplication(requirements,target,observation) {
   const steps=[...plan.steps];
   for(const path of requirements.requiredArtifacts??[]) {
     if(typeof path!=='string'||!path||path.startsWith('/')||path.split(/[\\/]/).includes('..'))throw new TypeError('Required artifact must be a relative path without traversal');
+    if(requirements.source&&!requirements.source.artifacts.some(a=>a.path===path))steps.push({status:'blocked',subject:path,detail:'required application artifact has no implementation provenance pin'});
     const exists=observation?.artifacts?.[path];
     if(exists===undefined)steps.push({status:'unverified',subject:path,detail:'required application artifact not observed'});
     else if(exists!==true)steps.push({status:'blocked',subject:path,detail:'required application artifact missing'});

@@ -61,13 +61,15 @@ test('pure API performs zero filesystem/network/process work', async () => {
   try { for(let i=0;i<10;i++) planDeployment(definition,observation); assert.equal(networkCalls,0); }
   finally {globalThis.fetch=originalFetch;}
   const source=await readFile(new URL('../src/index.js',import.meta.url),'utf8');
-  assert.doesNotMatch(source,/\b(import\s|require\(|fetch\(|process\.|child_process|node:fs|XMLHttpRequest)/);
+  const imports=[...source.matchAll(/import[^;]+from '([^']+)';/g)].map(m=>m[1]);assert.deepEqual(imports,['./provenance.js']);
+  const pureSource=await readFile(new URL('../src/provenance.js',import.meta.url),'utf8');
+  for(const text of [source.replace(/import[^;]+from '[^']+';/g,''),pureSource])assert.doesNotMatch(text,/\b(import\s|require\(|fetch\(|process\.|child_process|node:fs|XMLHttpRequest)/);
 });
 test('CLI dryrun leaves fixture files and work directory untouched and rejects deploy', async () => {
-  const dir=await mkdtemp(join(tmpdir(),'near-v-offline-'));
+  const dir=await mkdtemp(join(tmpdir(),'near-function-offline-'));
   try {
     await writeFile(join(dir,'definition.json'),JSON.stringify(definition)); await writeFile(join(dir,'snapshot.json'),JSON.stringify(observation));
-    const before=await readdir(dir); const cli=fileURLToPath(new URL('../bin/near-v.js',import.meta.url));
+    const before=await readdir(dir); const cli=fileURLToPath(new URL('../bin/near-function.js',import.meta.url));
     const run=spawnSync(process.execPath,[cli,'dryrun','definition.json','snapshot.json'],{cwd:dir,encoding:'utf8',env:{PATH:''}});
     assert.equal(run.status,0,run.stderr); assert.match(run.stdout,/Ready for review: yes/); assert.match(run.stdout,/Execution is unavailable/);
     assert.deepEqual(await readdir(dir),before); assert.deepEqual(JSON.parse(await readFile(join(dir,'definition.json'),'utf8')),definition);
@@ -91,7 +93,7 @@ test('application requirements resolve targets without executing or mutating inp
 });
 
 test('host capability attestations are explicit and survive snapshot validation', async()=>{
- const {dotRequirementsFor}=await import('near-v/requirements');const {defineSnapshot,planApplication}=await import('../src/index.js');
+ const {dotRequirementsFor}=await import('near-function/requirements');const {defineSnapshot,planApplication}=await import('../src/index.js');
  const requirements=dotRequirementsFor('claudeCli'),target={kind:'local',ports:{assistant:9462}};
  const artifacts=Object.fromEntries([...requirements.services.map(s=>s.artifact),...requirements.requiredArtifacts].map(x=>[x,true]));
  const base={services:{},artifacts,availableSecretRefs:[],previous:{stores:[]}};
@@ -102,7 +104,7 @@ test('host capability attestations are explicit and survive snapshot validation'
 });
 
 test('voice profile requires only named host secret and actual audio artifacts',async()=>{
- const {dotRequirementsFor}=await import('near-v/requirements');
+ const {dotRequirementsFor}=await import('near-function/requirements');
  const req=dotRequirementsFor('openrouter',{realtime:true});
  assert.deepEqual(req.services[0].secretRefs,['OPENROUTER_API_KEY','OPENAI_API_KEY']);
  assert.ok(req.requiredArtifacts.includes('stdlib/dot/src/capture-worklet.mjs'));

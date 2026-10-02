@@ -14,7 +14,7 @@
     "pack:check": "node scripts/audit.mjs",
     "consumer:check": "node scripts/clean-room.mjs",
     "native:consumer": "node scripts/native-consumer.mjs",
-    "dryrun": "node packages/function/deployment/bin/near-v.js dryrun --template dot --first-install",
+    "dryrun": "node packages/function/deployment/bin/near-function.js dryrun --template dot --first-install",
     "verify": "npm run check && npm test && npm run gen:check && npm run build && npm run dryrun && npm run pack:check && npm run consumer:check && npm run native:consumer && npm run canvas:build && npm run canvas:gen:check && npm run canvas:test",
     "canvas:build": "npm run build --prefix examples/canvas",
     "canvas:test": "npm test --prefix examples/canvas",

@@ -1,7 +1,7 @@
 import type {CameraFrame} from './camera-context.js';
-import type {Assistant,Snapshot,Task} from 'near-v/dot';
-import type {GPTLiveClient} from 'near-v/ai/gpt-live';
-import type {BrowserAudioCommand,BrowserCallEvent} from 'near-v/dot/live';
+import type {Assistant,Snapshot,Task} from 'near-function/dot';
+import type {GPTLiveClient} from 'near-function/ai/gpt-live';
+import type {BrowserAudioCommand,BrowserCallEvent} from 'near-function/dot/live';
 export type GPTLiveBrowserCommand=BrowserAudioCommand|{type:'delegation.approve'|'delegation.reject'|'delegation.cancel';delegationId:string};
 export interface GPTLiveBrowserTransport{send(event:BrowserCallEvent|{type:'status';state:'ready'|'continuous_audio';protocol:'gpt-live'}|{type:'delegation';delegationId:string;taskId:string;status:string;acknowledged:boolean}):void;subscribe(listener:(event:GPTLiveBrowserCommand)=>void):()=>void;close():void}
 export function createGPTLiveCallBridge(options:{assistant:Assistant;client:GPTLiveClient;browser:GPTLiveBrowserTransport;session:Parameters<GPTLiveClient['connect']>[0]['session'];signal?:AbortSignal;cameraContext?:'none'|'vision-summary';visionDelegate?:(frame:CameraFrame,options:{signal:AbortSignal})=>string|Promise<string>;executeDelegation?:(request:{delegationId:string;task:Task;context:Snapshot},options:{signal:AbortSignal})=>unknown|Promise<unknown>}):{start():Promise<void>;close():Promise<void>;cancel():Promise<void>;cancelDelegation(id:string):Promise<void>;done:Promise<void>;state():{closed:boolean;finalized:boolean;delegations:{id:string;taskId:string;status:string;acknowledged:boolean}[]}};

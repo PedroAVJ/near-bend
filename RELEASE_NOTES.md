@@ -8,10 +8,12 @@ Review before use:
 
 ```sh
 npm pack --dry-run
-near-v dryrun --template dot --first-install
-near-v dryrun definition.json snapshot.json
+near-function dryrun --template dot --first-install
+near-function dryrun definition.json snapshot.json
 ```
 
 Deployment execution, live infrastructure observation, rollout/rollback, production authentication, distributed state replay, generic native concurrency and a C transport backend remain unfinished. Native IO embedding is coupled to the pinned JavaScript compiler. This release excludes application code, customer data, artwork and local diagnostic/history artifacts.
 
 The source repository also retains the generic local framework canvas and inspector: Primitives and Components pages, layout/focus overlays, motion scrubbers, resize stages, pan/zoom and scheme controls. It contains neutral component specimens and a generated geometric SVG. It does not include application-specific screens or state simulators.
+
+Repository provenance preparation: F now supports explicit same-repository or mirror-to-implementation bindings, revision/origin pins, read-only local observations, artifact SHA-256 and revision-bound build receipts. Dry runs block absent or mismatched evidence. Seven native typed cases and 26 synthetic Git/CLI tests cover this contract. Semantic equivalence and execution remain unavailable; receipts are not signed attestations.

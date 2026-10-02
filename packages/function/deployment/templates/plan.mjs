@@ -1,8 +1,8 @@
 import {stat} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {openDotRequirements,canvasRequirements,dotRequirementsFor} from 'near-v/requirements';
-import {planApplication} from 'near-v/deploy';
+import {openDotRequirements,canvasRequirements,dotRequirementsFor} from 'near-function/requirements';
+import {planApplication} from 'near-function/deploy';
 const installedPackageRoot=resolve(dirname(fileURLToPath(import.meta.url)),'../..');
 /** Read-only artifact existence observation for an explicitly selected package/workspace. */
 export async function planTemplate({application='dot',provider='mock',voiceProtocol,target,packageRoot=installedPackageRoot,workspaceRoot,previous,availableCapabilities}={}){

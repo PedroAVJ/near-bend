@@ -5,3 +5,7 @@ export function createStateChannel<S,C,P=unknown>(options: {initial:S; reduce:(s
  mutate(command:C, options?:{expectedRevision?:number;principal?:P;signal?:AbortSignal}):Promise<Snapshot<S>>;
  subscribe(options?:{signal?:AbortSignal}):AsyncIterableIterator<Snapshot<S>>;
 };
+
+export {withDeploymentSource} from 'near-function/requirements';
+export {defineSource} from './deployment/src/provenance.js';
+export type {DeploymentSource,RepositoryPin,ArtifactPin} from './deployment/src/provenance.js';

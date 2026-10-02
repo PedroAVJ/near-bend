@@ -1,4 +1,4 @@
-import type {Snapshot} from 'near-v/dot';
+import type {Snapshot} from 'near-function/dot';
 export type AssistantComponent = { $: 'components.Group'; kind: string; children: unknown };
 export function assistantView(snapshot: Snapshot): AssistantComponent;
 export function renderAssistant(snapshot: Snapshot): string;

@@ -1,7 +1,7 @@
 import Base
-import ./node_modules/near-v/stdlib/ai/bend/requests.bend as Requests
-import ./node_modules/near-v/stdlib/ai/bend/speech.bend as Speech
-import ./node_modules/near-v/stdlib/ai/bend/runtime.bend as Runtime
+import ./node_modules/near-function/stdlib/ai/bend/requests.bend as Requests
+import ./node_modules/near-function/stdlib/ai/bend/speech.bend as Speech
+import ./node_modules/near-function/stdlib/ai/bend/runtime.bend as Runtime
 
 type Receipt is Data:
   Receipt{state: Speech.SpeechState, emitted: List<&2, U32>}

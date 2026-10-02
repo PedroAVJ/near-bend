@@ -1,5 +1,5 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';import {EventEmitter} from 'node:events';import {PassThrough} from 'node:stream';
-import {OpenRouterClient,OpenAIClient,AnthropicClient,ClaudeCliAdapter,ProviderError} from 'near-v/ai';
+import {OpenRouterClient,OpenAIClient,AnthropicClient,ClaudeCliAdapter,ProviderError} from 'near-function/ai';
 import {createAssistant} from '../src/index.mjs';
 import {OpenRouterAgent,OpenAIResponsesAgent,AnthropicMessagesAgent,ClaudeAgent} from '../src/adapters.mjs';
 const collect=async stream=>{const out=[];for await(const event of stream)out.push(event);return out};

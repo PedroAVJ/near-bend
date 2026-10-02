@@ -687,7 +687,7 @@ def firewall_bend(f: St.Firewall) -> String:
 
 # The V package whose types the file names.
 def v_package() -> String:
-  "near-v-framework@0.3.0.0/domain/architecture/system/deployment/nix-darwin"
+  "near-function-framework@0.3.0.0/domain/architecture/system/deployment/nix-darwin"
 
 # Bend source for the Mac's settings, firewall and Homebrew entries in V's types.
 def import_text(settings: List<&2, St.Setting>, fw: St.Firewall, brews: List<&2, Br.Brew>) -> String:

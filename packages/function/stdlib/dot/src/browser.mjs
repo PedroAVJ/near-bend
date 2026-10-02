@@ -1,4 +1,4 @@
-import {createRenderer} from 'near-v/browser';
+import {createRenderer} from 'near-function/browser';
 const renderer=createRenderer({});
 const text=(kind,value)=>({$:'components.Text',kind,value});
 const mediaText=m=>m.kind==='audio'?'Voice message':m.kind==='photo'?`Photo${m.media?.name?`: ${m.media.name}`:''}`:m.kind==='video'?`Video${m.media?.name?`: ${m.media.name}`:''}`:m.kind==='file'?`File${m.media?.name?`: ${m.media.name}`:''}`:m.text;

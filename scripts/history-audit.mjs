@@ -7,7 +7,7 @@ const auditPaths=new Set(['scripts/audit.mjs','scripts/history-audit.mjs']);
 const refs=git(['for-each-ref','--format=%(refname)']).trim().split('\n').filter(Boolean);
 if(refs.length!==1||refs[0]!=='refs/heads/main')throw Error('Unexpected history refs: '+refs.join(','));
 const commits=git(['rev-list','--all']).trim().split('\n').filter(Boolean);
-if(commits.length!==1)throw Error('This clean-history checkpoint must contain exactly one initial commit');
+if(!commits.length)throw Error('Clean history requires a reachable commit');
 const allowed=/^(?:\.github\/|AGENTS\.md$|LICENSE$|README\.md$|RELEASE_NOTES\.md$|THIRD_PARTY_NOTICES\.md$|\.gitignore$|package(?:-lock)?\.json$|packages\/function\/|scripts\/|tools\/bend\/|examples\/canvas\/)/;
 let scans=0;
 for(const commit of commits){

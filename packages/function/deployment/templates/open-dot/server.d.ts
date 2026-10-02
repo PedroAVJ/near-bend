@@ -1,12 +1,12 @@
 import type {Server} from 'node:http';
-import type {GPTLiveClient,GPTLiveSessionConfig} from 'near-v/ai/gpt-live';
-import type {createGPTLiveCallBridge} from 'near-v/dot/gpt-live';
-import type {OpenAIRealtimeClient,RealtimeSocketFactory,RealtimeSessionConfig} from 'near-v/ai/live';
-import type {AssetStore} from 'near-v/dot/assets';
-import type {ElevenLabsTranscriber} from 'near-v/dot/transcription';
-import type {Assistant} from 'near-v/dot';
-import type {OpenRouterClient,OpenRouterRequest,OpenAIClient,OpenAIRequest,AnthropicClient,AnthropicRequest,ClaudeCliAdapter} from 'near-v/ai';
-import type {ApplicationRequirements,DeploymentTarget,Observation,DeploymentPlan} from 'near-v/deploy';
+import type {GPTLiveClient,GPTLiveSessionConfig} from 'near-function/ai/gpt-live';
+import type {createGPTLiveCallBridge} from 'near-function/dot/gpt-live';
+import type {OpenAIRealtimeClient,RealtimeSocketFactory,RealtimeSessionConfig} from 'near-function/ai/live';
+import type {AssetStore} from 'near-function/dot/assets';
+import type {ElevenLabsTranscriber} from 'near-function/dot/transcription';
+import type {Assistant} from 'near-function/dot';
+import type {OpenRouterClient,OpenRouterRequest,OpenAIClient,OpenAIRequest,AnthropicClient,AnthropicRequest,ClaudeCliAdapter} from 'near-function/ai';
+import type {ApplicationRequirements,DeploymentTarget,Observation,DeploymentPlan} from 'near-function/deploy';
 export type TemplateProvider = {kind:'mock'}
  | {kind:'openrouter';apiKey?:string;model:string;allowPaidRequests:true;fetch?:typeof globalThis.fetch;client?:OpenRouterClient;options?:Omit<OpenRouterRequest,'model'|'messages'>}
  | {kind:'openai';apiKey?:string;model:string;allowPaidRequests:true;fetch?:typeof globalThis.fetch;client?:OpenAIClient;options?:Omit<OpenAIRequest,'model'|'input'|'previous_response_id'>}
